@@ -1,13 +1,13 @@
-package com.technogise.leavemanagementbe;
+package com.technogise.leavemanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LeaveManagementBeApplication {
+public class LeaveManagementApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LeaveManagementBeApplication.class, args);
+		SpringApplication.run(LeaveManagementApplication.class, args);
 	}
 
 }

@@ -1,10 +1,10 @@
-package com.technogise.leavemanagementbe;
+package com.technogise.leavemanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LeaveManagementBeApplicationTests {
+class LeaveManagementApplicationTests {
 
 	@Test
 	void contextLoads() {
