@@ -9,13 +9,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest
-public class GreetingControllerTest {
+public class HealthContollerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @InjectMocks
-    private GreetingController greetingController;
+    private HealthContollerTest healthContollerTest;
 
     @Test
     public void Should_ReturnGreetingMessage_When_EndpointIsAccessed() throws Exception {
