@@ -20,7 +20,7 @@ public class HealthContollerTest {
     @Test
     public void Should_ReturnOkStatus_When_EndpointIsAccessed() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/health-check"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
