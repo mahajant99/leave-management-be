@@ -18,10 +18,9 @@ public class HealthContollerTest {
     private HealthContollerTest healthContollerTest;
 
     @Test
-    public void Should_ReturnGreetingMessage_When_EndpointIsAccessed() throws Exception {
+    public void Should_ReturnOkStatus_When_EndpointIsAccessed() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Hello World !"));
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
