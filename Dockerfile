@@ -6,7 +6,7 @@ COPY . /home/gradle/src
 
 # Build the project.
 WORKDIR /home/gradle/src
-RUN gradle build --no-daemon
+RUN ./gradlew build
 
 # https://hub.docker.com/_/openjdk
 FROM openjdk:17-oracle
