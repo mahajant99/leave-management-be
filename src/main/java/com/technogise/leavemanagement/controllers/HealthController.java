@@ -1,12 +1,10 @@
 package com.technogise.leavemanagement.controllers;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@CrossOrigin(origins = "https://leave-management-fe.onrender.com/")
 public class HealthController {
 
     @GetMapping("/health-check")
