@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-cne40un109ks738tqe70-a.singapore-postgres.render.com:5432/leave_management_puel
+      - SPRING_DATASOURCE_USERNAME=leave_management_user
+      - SPRING_DATASOURCE_PASSWORD=owqfrStX1TMqrB8GhQGoKfBfzQBEdec5
