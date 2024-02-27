@@ -38,3 +38,12 @@ Update application.properties: Navigate to src/main/resources and open the appli
 `spring.flyway.locations=classpath:db/migration`<br/>
 
 After every table alteration in the table, update the migration directory, create a new SQL file for the migration. The naming convention for Flyway migration files is V<VERSION>__<DESCRIPTION>.sql, where <VERSION> is a version number and <DESCRIPTION> is a brief description of the migration.
+
+
+## Changing Environment Variables
+
+To change the environment variables (local/production), modify the `src/main/resources/application.properties` file. <br />
+For using local environment: <br />
+`spring.profiles.active=local` <br />
+For using production environment: <br />
+`spring.profiles.active=production` <br />
