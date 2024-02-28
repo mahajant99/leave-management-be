@@ -27,6 +27,16 @@ public class LeaveService {
 
     private User user;
 
+    public User getUserById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+        }
+
+        return user;
+    }
+
     public Leave createOneDayLeave(LeaveDTO leaveDTO) {
 
         double duration;
