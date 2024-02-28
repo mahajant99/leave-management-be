@@ -50,4 +50,18 @@ public class LeaveService {
                 user);
     }
 
+    public List<Leave> addLeave(LeaveDTO leaveDTO) {
+
+        List<Leave> addedLeaves = new ArrayList<>();
+
+        if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
+            Leave leave = createOneDayLeave(leaveDTO);
+            leaveRepository.save(leave);
+            addedLeaves.add(leave);
+        }
+
+        return addedLeaves;
+
+    }
+
 }
