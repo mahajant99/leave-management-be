@@ -42,6 +42,8 @@ public class LeaveService {
         double duration;
         HalfDay halfDay;
 
+        user = getUserById(leaveDTO.getUserId());
+
         if (leaveDTO.getLeaveType() == "fullday") {
             duration = 1;
             return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), null, user);
