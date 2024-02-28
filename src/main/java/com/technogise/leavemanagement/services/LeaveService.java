@@ -1,12 +1,10 @@
 package com.technogise.leavemanagement.services;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import com.technogise.leavemanagement.dtos.LeaveDTO;
@@ -28,10 +26,10 @@ public class LeaveService {
     private User user;
 
     public User getUserById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> retrievedUser = userRepository.findById(id);
 
-        if (optionalUser.isPresent()) {
-            user = optionalUser.get();
+        if (retrievedUser.isPresent()) {
+            user = retrievedUser.get();
         }
 
         return user;
@@ -47,7 +45,6 @@ public class LeaveService {
         if (leaveDTO.getLeaveType() == "fullday") {
             duration = 1;
             return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), null, user);
-
         } else {
             duration = 0.5;
         }
