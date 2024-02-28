@@ -30,11 +30,9 @@ public class LeaveService {
 
     public User getUserById(Long id) {
         Optional<User> retrievedUser = userRepository.findById(id);
-
         if (retrievedUser.isPresent()) {
             user = retrievedUser.get();
         }
-
         return user;
     }
 
@@ -62,7 +60,7 @@ public class LeaveService {
                 user);
     }
 
-    public List<Leave> addLeave(LeaveDTO leaveDTO) {
+    public List<Leave> addLeaves(LeaveDTO leaveDTO) {
 
         List<Leave> addedLeaves = new ArrayList<>();
 
