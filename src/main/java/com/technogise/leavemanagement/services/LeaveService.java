@@ -27,6 +27,8 @@ public class LeaveService {
 
     private static final String FULLDAY = "fullday";
     private static final String FIRSTHALF = "first half";
+    private static final double FULL = 1;
+    private static final double HALF = 0.5;
 
     public User getUserById(Long id) {
         Optional<User> retrievedUser = userRepository.findById(id);
@@ -44,10 +46,10 @@ public class LeaveService {
         user = getUserById(leaveDTO.getUserId());
 
         if (leaveDTO.getLeaveType().equals(FULLDAY)) {
-            duration = 1;
+            duration = FULL;
             return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), null, user);
         } else {
-            duration = 0.5;
+            duration = HALF;
         }
 
         if (leaveDTO.getLeaveType().equals(FIRSTHALF)) {
