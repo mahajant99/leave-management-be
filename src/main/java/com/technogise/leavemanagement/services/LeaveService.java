@@ -37,22 +37,28 @@ public class LeaveService {
         return user;
     }
 
-    public Leave createOneDayLeave(LeaveDTO leaveDTO) {
-
+    public double getLeaveDuration(LeaveDTO leaveDTO) {
         double duration;
-        HalfDay halfDay = null;
-
-        user = getUserById(leaveDTO.getUserId());
 
         if (leaveDTO.getLeaveType().equals(FULL_DAY)) {
             duration = FULL_DURATION;
-            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, user);
         } else {
             duration = HALF_DURATION;
         }
 
-        if (duration == HALF_DURATION) {
+        return duration;
+    }
+
+    public Leave createOneDayLeave(LeaveDTO leaveDTO) {
+        HalfDay halfDay = null;
+        double duration;
+
+        user = getUserById(leaveDTO.getUserId());
+
+        duration = getLeaveDuration(leaveDTO);
+        if (getLeaveDuration(leaveDTO) == HALF_DURATION) {
             halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
+            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, user);
         }
 
         return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
@@ -60,7 +66,6 @@ public class LeaveService {
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) {
-
         List<Leave> addedLeaves = new ArrayList<>();
 
         if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
@@ -68,9 +73,6 @@ public class LeaveService {
             leaveRepository.save(leave);
             addedLeaves.add(leave);
         }
-
         return addedLeaves;
-
     }
-
 }
