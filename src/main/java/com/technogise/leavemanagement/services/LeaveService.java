@@ -52,7 +52,8 @@ public class LeaveService {
 
         if (duration == HALF_DURATION) {
             halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
-            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, retrievedUser.get());
+            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
+                    retrievedUser.get());
         }
 
         return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
