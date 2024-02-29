@@ -23,18 +23,12 @@ public class LeaveService {
     @Autowired
     private UserRepository userRepository;
 
-    private User user;
-
     private static final String FULL_DAY = "fullday";
     private static final double FULL_DURATION = 1;
     private static final double HALF_DURATION = 0.5;
 
-    public User getUserById(Long id) {
-        Optional<User> retrievedUser = userRepository.findById(id);
-        if (retrievedUser.isPresent()) {
-            user = retrievedUser.get();
-        }
-        return user;
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     public double getLeaveDuration(LeaveDTO leaveDTO) {
@@ -52,17 +46,17 @@ public class LeaveService {
         HalfDay halfDay = null;
         double duration;
 
-        user = getUserById(leaveDTO.getUserId());
+        Optional<User> retrievedUser = getUserById(leaveDTO.getUserId());
 
         duration = getLeaveDuration(leaveDTO);
-        
+
         if (duration == HALF_DURATION) {
             halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
-            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, user);
+            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, retrievedUser.get());
         }
 
         return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
-                user);
+                retrievedUser.get());
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) {
