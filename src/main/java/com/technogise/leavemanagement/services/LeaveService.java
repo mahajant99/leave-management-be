@@ -25,10 +25,9 @@ public class LeaveService {
 
     private User user;
 
-    private static final String FULLDAY = "fullday";
-    private static final String FIRSTHALF = "first half";
-    private static final double FULL = 1;
-    private static final double HALF = 0.5;
+    private static final String FULL_DAY = "fullday";
+    private static final double FULL_DURATION = 1;
+    private static final double HALF_DURATION = 0.5;
 
     public User getUserById(Long id) {
         Optional<User> retrievedUser = userRepository.findById(id);
@@ -41,21 +40,19 @@ public class LeaveService {
     public Leave createOneDayLeave(LeaveDTO leaveDTO) {
 
         double duration;
-        HalfDay halfDay;
+        HalfDay halfDay = null;
 
         user = getUserById(leaveDTO.getUserId());
 
-        if (leaveDTO.getLeaveType().equals(FULLDAY)) {
-            duration = FULL;
-            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), null, user);
+        if (leaveDTO.getLeaveType().equals(FULL_DAY)) {
+            duration = FULL_DURATION;
+            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, user);
         } else {
-            duration = HALF;
+            duration = HALF_DURATION;
         }
 
-        if (leaveDTO.getLeaveType().equals(FIRSTHALF)) {
-            halfDay = HalfDay.FIRST_HALF;
-        } else {
-            halfDay = HalfDay.SECOND_HALF;
+        if (duration == HALF_DURATION) {
+            halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
         }
 
         return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
