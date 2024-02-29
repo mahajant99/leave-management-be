@@ -5,5 +5,5 @@ CREATE TABLE leaves (
     description VARCHAR(255),
     half_day VARCHAR(255),
     user_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
