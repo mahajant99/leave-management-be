@@ -45,7 +45,6 @@ public class LeaveService {
         } else {
             duration = HALF_DURATION;
         }
-
         return duration;
     }
 
@@ -56,7 +55,8 @@ public class LeaveService {
         user = getUserById(leaveDTO.getUserId());
 
         duration = getLeaveDuration(leaveDTO);
-        if (getLeaveDuration(leaveDTO) == HALF_DURATION) {
+        
+        if (duration == HALF_DURATION) {
             halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
             return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay, user);
         }
