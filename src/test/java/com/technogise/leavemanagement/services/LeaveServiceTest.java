@@ -25,19 +25,16 @@ public class LeaveServiceTest {
     private LeaveService leaveService;
 
     @Test
-    public void Should_ReturnUser_When_getUserByIdCalled() {
-
+    public void Should_ReturnUser_When_UserExists() {
         User user = new User();
         Long userId = 1L;
         user.setId(userId);
-
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         Optional<User> retrievedUser = leaveService.getUserById(userId);
 
         assertEquals(true, retrievedUser.isPresent());
-
     }
 
 }
