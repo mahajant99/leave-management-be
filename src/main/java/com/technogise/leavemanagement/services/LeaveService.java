@@ -31,7 +31,7 @@ public class LeaveService {
         return userRepository.findById(id);
     }
 
-    public double getLeaveDuration(LeaveDTO leaveDTO) {
+    public double getDuration(LeaveDTO leaveDTO) {
         double duration;
 
         if (leaveDTO.getLeaveType().equals(FULL_DAY)) {
@@ -48,7 +48,7 @@ public class LeaveService {
 
         Optional<User> retrievedUser = getUserById(leaveDTO.getUserId());
 
-        duration = getLeaveDuration(leaveDTO);
+        duration = getDuration(leaveDTO);
 
         if (duration == HALF_DURATION) {
             halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
