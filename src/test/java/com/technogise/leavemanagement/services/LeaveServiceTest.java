@@ -37,4 +37,16 @@ public class LeaveServiceTest {
         assertEquals(true, retrievedUser.isPresent());
     }
 
+    @Test
+    public void Should_ReturnEmpty_When_UserDoesNotExists() {
+        Long userId = 2L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        Optional<User> retrievedUser = leaveService.getUserById(userId);
+
+        assertEquals(false, retrievedUser.isPresent());
+
+    }
+
 }
