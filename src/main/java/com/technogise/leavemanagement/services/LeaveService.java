@@ -5,10 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 
+@Service
 public class LeaveService {
 
     @Autowired
