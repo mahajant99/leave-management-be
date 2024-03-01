@@ -2,7 +2,8 @@ package com.technogise.leavemanagement.entities;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
+import com.technogise.leavemanagement.enums.HalfDay;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
