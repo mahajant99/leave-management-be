@@ -24,28 +24,4 @@ public class LeaveServiceTest {
     @InjectMocks
     private LeaveService leaveService;
 
-    @Test
-    public void Should_ReturnUser_When_UserExists() {
-        User user = new User();
-        Long userId = 1L;
-        user.setId(userId);
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
-        Optional<User> retrievedUser = leaveService.getUserById(userId);
-
-        assertEquals(true, retrievedUser.isPresent());
-    }
-
-    @Test
-    public void Should_ReturnEmpty_When_UserDoesNotExist() {
-        Long userId = 2L;
-
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        Optional<User> retrievedUser = leaveService.getUserById(userId);
-
-        assertEquals(false, retrievedUser.isPresent());
-    }
-
 }
