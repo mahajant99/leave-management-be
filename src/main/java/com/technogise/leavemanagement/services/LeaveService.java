@@ -42,6 +42,21 @@ public class LeaveService {
         return duration;
     }
 
+    public HalfDay mapLeaveType(String leaveType) {
+        leaveType = leaveType.toLowerCase();
+
+        switch (leaveType) {
+            case "first half":
+            case "firsthalf":
+                return HalfDay.FIRST_HALF;
+            case "second half":
+            case "secondhalf":
+                return HalfDay.SECOND_HALF;
+            default:
+                throw new IllegalArgumentException("Unrecognized leave type: " + leaveType);
+        }
+    }
+
     public Leave createOneDayLeave(LeaveDTO leaveDTO) {
         HalfDay halfDay = null;
         double duration;
@@ -51,7 +66,7 @@ public class LeaveService {
         duration = getDuration(leaveDTO);
 
         if (duration == HALF_DURATION) {
-            halfDay = HalfDay.valueOf(leaveDTO.getLeaveType());
+            halfDay = mapLeaveType(leaveDTO.getLeaveType());
             return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
                     retrievedUser.get());
         }
