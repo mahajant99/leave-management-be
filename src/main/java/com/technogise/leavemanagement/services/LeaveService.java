@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.technogise.leavemanagement.dtos.LeaveDTO;
-import com.technogise.leavemanagement.entities.HalfDay;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
+import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
@@ -27,9 +27,6 @@ public class LeaveService {
     private static final double FULL_DURATION = 1;
     private static final double HALF_DURATION = 0.5;
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
 
     public double getDuration(String leaveType) {
         double duration;
@@ -57,29 +54,28 @@ public class LeaveService {
         }
     }
 
-    public Leave createOneDayLeave(LeaveDTO leaveDTO) {
+    public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
         HalfDay halfDay = null;
         double duration;
-
-        Optional<User> retrievedUser = getUserById(leaveDTO.getUserId());
 
         duration = getDuration(leaveDTO.getLeaveType().toString());
 
         if (duration == HALF_DURATION) {
             halfDay = mapLeaveType(leaveDTO.getLeaveType());
             return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
-                    retrievedUser.get());
+                    user);
         }
 
         return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
-                retrievedUser.get());
+                user);
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) {
         List<Leave> addedLeaves = new ArrayList<>();
+        Optional<User> currentUser = userRepository.findById(leaveDTO.getUserId());
 
         if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
-            Leave leave = createOneDayLeave(leaveDTO);
+            Leave leave = createOneDayLeave(leaveDTO, currentUser.get());
             leaveRepository.save(leave);
             addedLeaves.add(leave);
         }
