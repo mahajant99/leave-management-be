@@ -14,13 +14,13 @@ import org.springframework.data.domain.Page;
 import com.technogise.leavemanagement.services.LeaveService;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/leaves")
+public class LeaveController {
 
     @Autowired
     private LeaveService leaveService;
 
-    @GetMapping("/{userId}/leaves")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<Page<Leave>> retrieveLeaves(@PathVariable("userId") Long userId, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size) {
 
