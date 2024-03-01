@@ -15,7 +15,6 @@ public class LeaveContoller {
     private LeaveService leaveService;
 
     @DeleteMapping("/leaves/{id}")
-
     public ResponseEntity<Void> deleteLeave(@PathVariable Long id) {
         leaveService.remove(id);
         return ResponseEntity.noContent().build();
