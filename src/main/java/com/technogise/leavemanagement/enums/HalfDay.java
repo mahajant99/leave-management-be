@@ -1,4 +1,4 @@
-package com.technogise.leavemanagement.entities;
+package com.technogise.leavemanagement.enums;
 
 public enum HalfDay {
     FIRST_HALF,
