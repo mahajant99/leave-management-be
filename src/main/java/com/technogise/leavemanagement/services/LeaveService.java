@@ -24,6 +24,8 @@ public class LeaveService {
     private UserRepository userRepository;
 
     private static final String FULL_DAY = "fullday";
+    private static final String FIRST_HALF = "firsthalf";
+    private static final String SECOND_HALF = "secondhalf";
     private static final double FULL_DURATION = 1;
     private static final double HALF_DURATION = 0.5;
 
@@ -31,7 +33,7 @@ public class LeaveService {
     public double getDuration(String leaveType) {
         double duration;
 
-        if (leaveType.equals(FULL_DAY)) {
+        if (leaveType.equalsIgnoreCase(FULL_DAY)) {
             duration = FULL_DURATION;
         } else {
             duration = HALF_DURATION;
@@ -40,14 +42,12 @@ public class LeaveService {
     }
 
     public HalfDay mapLeaveType(String leaveType) {
-        leaveType = leaveType.toLowerCase();
+        leaveType = leaveType.trim().toLowerCase().replaceAll("\\s+", "");
 
         switch (leaveType) {
-            case "first half":
-            case "firsthalf":
+            case FIRST_HALF:
                 return HalfDay.FIRST_HALF;
-            case "second half":
-            case "secondhalf":
+            case SECOND_HALF:
                 return HalfDay.SECOND_HALF;
             default:
                 throw new IllegalArgumentException("Unrecognized leave type: " + leaveType);
@@ -58,7 +58,7 @@ public class LeaveService {
         HalfDay halfDay = null;
         double duration;
 
-        duration = getDuration(leaveDTO.getLeaveType().toString());
+        duration = getDuration(leaveDTO.getLeaveType());
 
         if (duration == HALF_DURATION) {
             halfDay = mapLeaveType(leaveDTO.getLeaveType());
