@@ -58,4 +58,22 @@ public class LeaveControllerTest {
                 .andExpect(jsonPath("$.content", hasSize(1)))
                 .andExpect(jsonPath("$.content[0].id", notNullValue()));
     }
+
+    @Test
+    @DisplayName("Given a user ID and pagination parameters, when retrieving leaves, then expect no content")
+    public void testRetrieveLeavesNoContent() throws Exception {
+        Long userId = 1L;
+        int page = 0;
+        int size = 6;
+        Page<Leave> mockPage = Page.empty();
+
+        when(leaveService.getLeavesByUserId(anyLong(), anyInt(), anyInt())).thenReturn(mockPage);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(get("/leaves/users/{userId}", userId)
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size)))
+                .andExpect(status().isNoContent());
+    }
 }
