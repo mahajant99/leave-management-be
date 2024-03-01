@@ -31,10 +31,10 @@ public class LeaveService {
         return userRepository.findById(id);
     }
 
-    public double getDuration(LeaveDTO leaveDTO) {
+    public double getDuration(String leaveType) {
         double duration;
 
-        if (leaveDTO.getLeaveType().equals(FULL_DAY)) {
+        if (leaveType.equals(FULL_DAY)) {
             duration = FULL_DURATION;
         } else {
             duration = HALF_DURATION;
@@ -63,7 +63,7 @@ public class LeaveService {
 
         Optional<User> retrievedUser = getUserById(leaveDTO.getUserId());
 
-        duration = getDuration(leaveDTO);
+        duration = getDuration(leaveDTO.getLeaveType().toString());
 
         if (duration == HALF_DURATION) {
             halfDay = mapLeaveType(leaveDTO.getLeaveType());
