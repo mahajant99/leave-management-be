@@ -44,7 +44,7 @@ public class LeaveService {
 
         if (leaveDTO.getLeaveType() == "fullday") {
             duration = 1;
-            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), null, user);
+            return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), null, user, false);
 
         } else {
             duration = 0.5;
@@ -57,7 +57,7 @@ public class LeaveService {
         }
 
         return new Leave(null, leaveDTO.getStartDate(), duration, leaveDTO.getDescription(), halfDay,
-                user);
+                user, false);
     }
 
     public List<Leave> addLeave(LeaveDTO leaveDTO) {
