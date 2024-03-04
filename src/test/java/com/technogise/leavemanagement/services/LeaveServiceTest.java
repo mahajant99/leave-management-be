@@ -2,6 +2,11 @@ package com.technogise.leavemanagement.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,13 +17,13 @@ import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.HalfDay;
-import com.technogise.leavemanagement.repositories.UserRepository;
+import com.technogise.leavemanagement.repositories.LeaveRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class LeaveServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private LeaveRepository leaveRepository;
 
     @InjectMocks
     private LeaveService leaveService;
@@ -30,11 +35,17 @@ public class LeaveServiceTest {
 
         LeaveDTO leaveDTO = new LeaveDTO();
         leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("fullday");
+        leaveDTO.setLeaveType("full day");
 
-        Leave leave = leaveService.createOneDayLeave(leaveDTO, user);
+        Leave newLeave = new Leave();
+        newLeave.setHalfDay(null);
+        newLeave.setDuration(1);
 
-        assertNull(leave.getHalfDay());
+        lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+
+        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        assertNull(createdLeave.getHalfDay());
     }
 
     @Test
