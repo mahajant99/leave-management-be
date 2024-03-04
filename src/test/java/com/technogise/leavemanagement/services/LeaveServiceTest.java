@@ -88,4 +88,24 @@ public class LeaveServiceTest {
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
 
+    @Test
+    public void Should_HaveDateSetCorrectly_When_CreatingLeave() {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setStartDate(LocalDate.of(2022, 3, 5));
+
+        Leave newLeave = new Leave();
+        newLeave.setDate(LocalDate.of(2022, 3, 5));
+
+        when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+
+        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        assertEquals(leaveDTO.getStartDate(), createdLeave.getDate());
+    }
+
 }
