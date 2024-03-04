@@ -88,6 +88,7 @@ public class LeaveServiceTest {
         Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
+        assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
     }
 
     @Test
