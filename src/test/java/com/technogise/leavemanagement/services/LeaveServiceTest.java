@@ -108,4 +108,24 @@ public class LeaveServiceTest {
         assertEquals(leaveDTO.getStartDate(), createdLeave.getDate());
     }
 
+    @Test
+    public void Should_HaveDurationSetToOne_When_LeaveTypeIsFullDay() {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setLeaveType("full day");
+
+        Leave newLeave = new Leave();
+        newLeave.setDuration(1);
+
+        when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+
+        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        assertEquals(newLeave.getDuration(), createdLeave.getDuration());
+
+    }
+
 }
