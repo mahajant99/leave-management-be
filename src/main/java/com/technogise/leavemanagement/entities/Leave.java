@@ -2,7 +2,7 @@ package com.technogise.leavemanagement.entities;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.technogise.leavemanagement.enums.HalfDay;
 
 import io.micrometer.common.lang.Nullable;
@@ -40,6 +40,7 @@ public class Leave {
     @Nullable
     private HalfDay halfDay;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
