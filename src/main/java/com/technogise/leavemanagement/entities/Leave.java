@@ -2,8 +2,12 @@ package com.technogise.leavemanagement.entities;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.technogise.leavemanagement.enums.HalfDay;
+
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,7 +36,8 @@ public class Leave {
 
     private String description;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
+    @Nullable
     private HalfDay halfDay;
 
     @ManyToOne
