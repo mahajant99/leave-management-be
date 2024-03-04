@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,7 @@ public class User {
 
     private String[] roles;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Leave> leaves;
 }
