@@ -31,6 +31,6 @@ public class User {
 
     private String[] roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Leave> leaves;
 }
