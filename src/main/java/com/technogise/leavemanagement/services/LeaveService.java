@@ -23,9 +23,9 @@ public class LeaveService {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String FULL_DAY = "fullday";
-    private static final String FIRST_HALF = "firsthalf";
-    private static final String SECOND_HALF = "secondhalf";
+    private static final String FULL_DAY = "FULLDAY";
+    private static final String FIRST_HALF = "FIRSTHALF";
+    private static final String SECOND_HALF = "SECONDHALF";
     private static final double FULL_DURATION = 1;
     private static final double HALF_DURATION = 0.5;
 
@@ -38,7 +38,7 @@ public class LeaveService {
     }
 
     public HalfDay mapLeaveType(String leaveType) {
-        leaveType = leaveType.trim().toLowerCase().replaceAll("\\s+", "");
+        leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
 
         switch (leaveType) {
             case FULL_DAY:
@@ -53,7 +53,7 @@ public class LeaveService {
     }
 
     public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
-        Leave leave = new Leave(); 
+        Leave leave = new Leave();
         leave.setDate(leaveDTO.getStartDate());
         leave.setDuration(getDuration(leaveDTO.getLeaveType()));
         leave.setDescription(leaveDTO.getDescription());
