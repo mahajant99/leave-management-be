@@ -27,8 +27,8 @@ public class LeaveController {
     @PostMapping
     public ResponseEntity<List<Leave>> addLeaves(@RequestBody LeaveDTO leaveDTO) {
         try {
-            List<Leave> leave = leaveService.addLeaves(leaveDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(leave);
+            List<Leave> leaves = leaveService.addLeaves(leaveDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(leaves);
         } catch (Exception e) {
             log.error("Error occurred while adding leave: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
