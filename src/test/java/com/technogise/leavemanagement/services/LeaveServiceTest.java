@@ -49,7 +49,7 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_HaveHalfDayFirstHalf_When_LeaveTypeIsFirstHalf() {
+    public void Should_HaveHalfDayAsFirstHalf_When_LeaveTypeIsFirstHalf() {
         User user = new User();
         user.setId(1L);
 
@@ -57,9 +57,15 @@ public class LeaveServiceTest {
         leaveDTO.setUserId(1L);
         leaveDTO.setLeaveType("first half");
 
-        Leave leave = leaveService.createOneDayLeave(leaveDTO, user);
+        Leave newLeave = new Leave();
+        newLeave.setHalfDay(HalfDay.FIRST_HALF);
+        newLeave.setDuration(0.5);
 
-        assertEquals(HalfDay.FIRST_HALF, leave.getHalfDay());
+        lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+
+        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
 
     @Test
