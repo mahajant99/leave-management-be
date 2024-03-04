@@ -128,4 +128,24 @@ public class LeaveServiceTest {
 
     }
 
+    @Test
+    public void Should_HaveDurationSetToZeroPointFive_When_LeaveTypeIsHalfDay() {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setLeaveType("full day");
+
+        Leave newLeave = new Leave();
+        newLeave.setDuration(0.5);
+
+        when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+
+        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        assertEquals(newLeave.getDuration(), createdLeave.getDuration());
+
+    }
+
 }
