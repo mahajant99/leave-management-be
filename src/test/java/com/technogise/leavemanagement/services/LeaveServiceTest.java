@@ -41,7 +41,7 @@ public class LeaveServiceTest {
         Sort sort = Sort.by(Sort.Direction.DESC, "date");
         PageRequest pageable = PageRequest.of(page, size, sort);
 
-        User user = new User(4L,"Summer","summer@gmail",roles, null);
+        User user = new User(userId,"Summer","summer@gmail",roles, null);
         
         Leave leave1 = new Leave();
         leave1.setId(1L);

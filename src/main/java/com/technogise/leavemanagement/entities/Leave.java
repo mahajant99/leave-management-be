@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.technogise.leavemanagement.enums.HalfDay;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,7 +34,7 @@ public class Leave {
 
     private String description;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private HalfDay halfDay;
 
     @ManyToOne
