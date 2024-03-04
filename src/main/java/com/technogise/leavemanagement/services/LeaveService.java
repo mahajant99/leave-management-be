@@ -53,10 +53,14 @@ public class LeaveService {
     }
 
     public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
-        return leaveRepository.save(new Leave(null, leaveDTO.getStartDate(), getDuration(leaveDTO.getLeaveType()),
-                leaveDTO.getDescription(),
-                mapLeaveType(leaveDTO.getLeaveType()),
-                user));
+        Leave leave = new Leave(); 
+        leave.setDate(leaveDTO.getStartDate());
+        leave.setDuration(getDuration(leaveDTO.getLeaveType()));
+        leave.setDescription(leaveDTO.getDescription());
+        leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
+        leave.setUser(user);
+
+        return leaveRepository.save(leave);
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) {
