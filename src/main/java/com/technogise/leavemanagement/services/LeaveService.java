@@ -41,6 +41,8 @@ public class LeaveService {
         leaveType = leaveType.trim().toLowerCase().replaceAll("\\s+", "");
 
         switch (leaveType) {
+            case FULL_DAY:
+                return null;
             case FIRST_HALF:
                 return HalfDay.FIRST_HALF;
             case SECOND_HALF:
