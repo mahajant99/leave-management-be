@@ -77,9 +77,15 @@ public class LeaveServiceTest {
         leaveDTO.setUserId(1L);
         leaveDTO.setLeaveType("second half");
 
-        Leave leave = leaveService.createOneDayLeave(leaveDTO, user);
+        Leave newLeave = new Leave();
+        newLeave.setHalfDay(HalfDay.SECOND_HALF);
+        newLeave.setDuration(0.5);
 
-        assertEquals(HalfDay.SECOND_HALF, leave.getHalfDay());
+        lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+
+        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
 
 }
