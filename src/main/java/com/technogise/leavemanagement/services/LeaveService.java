@@ -36,16 +36,12 @@ public class LeaveService {
     public HalfDay mapLeaveType(String leaveType) {
         leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
 
-        switch (leaveType) {
-            case FULL_DAY:
-                return null;
-            case FIRST_HALF:
-                return HalfDay.FIRST_HALF;
-            case SECOND_HALF:
-                return HalfDay.SECOND_HALF;
-            default:
-                throw new IllegalArgumentException("Unrecognized leave type: " + leaveType);
-        }
+        return switch (leaveType) {
+            case FULL_DAY -> null;
+            case FIRST_HALF -> HalfDay.FIRST_HALF;
+            case SECOND_HALF -> HalfDay.SECOND_HALF;
+            default -> throw new IllegalArgumentException("Unrecognized leave type: " + leaveType);
+        };
     }
 
     public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
