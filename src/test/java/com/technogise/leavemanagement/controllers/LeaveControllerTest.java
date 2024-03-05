@@ -1,5 +1,8 @@
 package com.technogise.leavemanagement.controllers;
 
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -14,7 +17,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,4 +81,14 @@ public class LeaveControllerTest {
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    public void givenLeaveId_whenDeleteLeave_thenStatusNoContent() throws Exception {
+        Long id = 1L; 
+        doNothing().when(leaveService).remove(id); 
+
+        mockMvc.perform(delete("/leaves/{id}", id))
+                .andExpect(status().isNoContent());
+    }
+
 }
