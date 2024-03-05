@@ -75,7 +75,7 @@ public class LeaveService {
     }
 
     public void remove(Long id){
-        leaveRepository.deleteById(id);
+        leaveRepository.softDeleteById(id);
     }
 
 }
