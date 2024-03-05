@@ -30,11 +30,7 @@ public class LeaveService {
     private static final double HALF_DURATION = 0.5;
 
     public double getDuration(String leaveType) {
-
-        if (leaveType.equalsIgnoreCase(FULL_DAY)) {
-            return FULL_DURATION;
-        }
-        return HALF_DURATION;
+        return leaveType.equalsIgnoreCase(FULL_DAY) ? FULL_DURATION : HALF_DURATION;
     }
 
     public HalfDay mapLeaveType(String leaveType) {
