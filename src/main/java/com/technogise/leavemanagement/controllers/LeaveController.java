@@ -1,6 +1,5 @@
 package com.technogise.leavemanagement.controllers;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,24 +14,33 @@ import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/leaves")
-@Slf4j
 public class LeaveController {
     @Autowired
     private LeaveService leaveService;
 
     @PostMapping
     public ResponseEntity<List<Leave>> addLeaves(@RequestBody LeaveDTO leaveDTO) {
-        try {
-            List<Leave> leaves = leaveService.addLeaves(leaveDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(leaves);
-        } catch (Exception e) {
-            log.error("Error occurred while adding leave: {}", e.getMessage());
+        List<Leave> leaves = leaveService.addLeaves(leaveDTO);
+
+        if(!validateLeaveDTO(leaveDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
+        if (leaves.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(leaves);
+    }
+
+    private boolean validateLeaveDTO(LeaveDTO leaveDTO) {
+        return (leaveDTO.getUserId() == null ||
+                leaveDTO.getStartDate() == null ||
+                leaveDTO.getEndDate() == null ||
+                leaveDTO.getLeaveType() == null ||
+                leaveDTO.getLeaveType().isEmpty());
     }
 
 }
