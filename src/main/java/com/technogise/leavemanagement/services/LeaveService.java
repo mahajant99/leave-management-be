@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
@@ -30,7 +29,8 @@ public class LeaveService {
     private static final double HALF_DURATION = 0.5;
 
     public double getDuration(String leaveType) {
-        return leaveType.equalsIgnoreCase(FULL_DAY) ? FULL_DURATION : HALF_DURATION;
+        leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
+        return leaveType.equals(FULL_DAY) ? FULL_DURATION : HALF_DURATION;
     }
 
     public HalfDay mapLeaveType(String leaveType) {
