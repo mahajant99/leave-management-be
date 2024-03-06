@@ -1,6 +1,7 @@
 package com.technogise.leavemanagement.controllers;
 
 import java.util.List;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,6 @@ public class LeaveController {
     @PostMapping
     public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) {
         List<Leave> leaves = leaveService.addLeaves(leaveDTO);
-
         return leaves.isEmpty() ?
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() :
                 ResponseEntity.status(HttpStatus.CREATED).body(leaves);
