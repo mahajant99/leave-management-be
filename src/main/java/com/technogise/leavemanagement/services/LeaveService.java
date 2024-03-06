@@ -1,6 +1,7 @@
 package com.technogise.leavemanagement.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,10 +58,14 @@ public class LeaveService {
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) {
         List<Leave> addedLeaves = new ArrayList<>();
-        Optional<User> currentUser = userRepository.findById(leaveDTO.getUserId());
+        Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
+
+        if (!currentUserOptional.isPresent()) return Collections.emptyList();
+
+        User currentUser = currentUserOptional.get();
 
         if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
-            Leave leave = createOneDayLeave(leaveDTO, currentUser.get());
+            Leave leave = createOneDayLeave(leaveDTO, currentUser);
             addedLeaves.add(leave);
         }
         return addedLeaves;
