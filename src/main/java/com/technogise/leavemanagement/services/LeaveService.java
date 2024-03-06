@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.technogise.leavemanagement.dtos.LeaveDTO;
@@ -14,7 +16,11 @@ import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
+
 @Service
+@Transactional
 public class LeaveService {
 
     @Autowired
@@ -74,8 +80,12 @@ public class LeaveService {
 
     }
 
-    public void remove(Long id){
-        leaveRepository.softDeleteById(id);
+    @SuppressWarnings("null")
+    public void remove(Long id) {
+        Leave leave = leaveRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Leave with id " + id + " not found"));
+        leave.setDeleted(true);
+        leaveRepository.save(leave);
     }
 
 }

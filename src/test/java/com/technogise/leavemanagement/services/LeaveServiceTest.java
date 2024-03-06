@@ -1,6 +1,7 @@
 package com.technogise.leavemanagement.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import java.util.List;
+import java.util.Optional;
 import java.util.Arrays;
 import java.time.LocalDate;
 
@@ -62,4 +64,28 @@ public class LeaveServiceTest {
         
         assertEquals(expectedPage, resultPage);
     }
+
+        @Test
+    public void testRemove() {
+        
+        Long leaveId = 1L;
+        String[] userRole = {"user"};
+        User user = new User(001l, "Test User" , "testuser@gmail.com", userRole, null);
+
+        Leave leave = new Leave();
+        leave.setId(leaveId);
+        leave.setDeleted(false);
+        leave.setDate(LocalDate.now());
+        leave.setDuration(1);
+        leave.setDescription("Sick Leave");
+        leave.setHalfDay(null);
+        leave.setUser(user);
+
+        when(leaveRepository.findById(leaveId)).thenReturn(java.util.Optional.of(leave));
+
+        leaveService.remove(leaveId);
+        Optional<Leave> response = leaveRepository.findById(leaveId);
+        
+        assertTrue(response.get().isDeleted());
+    } 
 }

@@ -84,8 +84,8 @@ public class LeaveControllerTest {
 
     @Test
     public void givenLeaveId_whenDeleteLeave_thenStatusNoContent() throws Exception {
-        Long id = 1L; 
-        doNothing().when(leaveService).remove(id); 
+        Long id = 1L;
+        doNothing().when(leaveService).remove(id);
 
         mockMvc.perform(delete("/leaves/{id}", id))
                 .andExpect(status().isNoContent());

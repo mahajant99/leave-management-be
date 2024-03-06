@@ -6,12 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.technogise.leavemanagement.entities.Leave;
 
 @Repository
-@Transactional
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     @Query("SELECT leaveRequest FROM Leave leaveRequest WHERE leaveRequest.user.id = :userId ORDER BY leaveRequest.date DESC")

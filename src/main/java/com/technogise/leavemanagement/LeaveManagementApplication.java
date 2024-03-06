@@ -9,5 +9,4 @@ public class LeaveManagementApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LeaveManagementApplication.class, args);
 	}
-
 }
