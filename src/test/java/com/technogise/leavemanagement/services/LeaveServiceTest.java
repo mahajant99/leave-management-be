@@ -18,6 +18,7 @@ import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @ExtendWith(MockitoExtension.class)
 public class LeaveServiceTest {

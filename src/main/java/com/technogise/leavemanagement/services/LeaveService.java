@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.entities.Leave;
@@ -36,7 +36,6 @@ public class LeaveService {
 
     public HalfDay mapLeaveType(String leaveType) {
         leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
-
         return switch (leaveType) {
             case FULL_DAY -> null;
             case FIRST_HALF -> HalfDay.FIRST_HALF;
