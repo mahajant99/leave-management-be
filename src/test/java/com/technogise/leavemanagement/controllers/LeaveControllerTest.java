@@ -19,13 +19,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -133,5 +140,21 @@ public class LeaveControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(jsonPath("$.description").value("Description is required"));
+    }
+
+    @Test
+    public void Should_ReturnInternalServerError_When_ResponseHasEmptyList() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setDescription("Vacation leave");
+
+        when(leaveService.addLeaves(any(LeaveDTO.class))).thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<Leave>> response = leaveController.addLeaves(leaveDTO);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
