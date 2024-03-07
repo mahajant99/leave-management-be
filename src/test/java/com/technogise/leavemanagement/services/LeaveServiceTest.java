@@ -163,4 +163,13 @@ public class LeaveServiceTest {
         assertNull(halfDay);
     }
 
+    @Test
+    public void Should_MapHalfDayAsFirstHalf_When_LeaveTypeIsFirstHalf() {
+        String leaveType = "first half";
+
+        HalfDay halfDay = leaveService.mapLeaveType(leaveType);
+
+        assertEquals(HalfDay.FIRST_HALF, halfDay);
+    }
+
 }
