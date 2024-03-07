@@ -65,7 +65,8 @@ public class LeaveServiceTest {
         assertEquals(expectedPage, resultPage);
     }
 
-        @Test
+    @Test
+    @DisplayName("Given a user and a leave exists, when you softdelete a leave, then deleted should be set to true.")
     public void testRemove() {
         
         Long leaveId = 1L;
@@ -85,7 +86,7 @@ public class LeaveServiceTest {
 
         leaveService.remove(leaveId);
         Optional<Leave> response = leaveRepository.findById(leaveId);
-        
+
         assertTrue(response.get().isDeleted());
     } 
 }
