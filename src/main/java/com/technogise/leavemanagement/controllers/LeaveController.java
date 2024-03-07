@@ -17,10 +17,11 @@ import com.technogise.leavemanagement.services.LeaveService;
 @RestController
 @RequestMapping("/leaves")
 public class LeaveController {
+
     @Autowired
     private LeaveService leaveService;
 
-    @PostMapping
+    @PostMapping("/leaves")
     public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) {
         List<Leave> leaves = leaveService.addLeaves(leaveDTO);
         return leaves.isEmpty() ?
