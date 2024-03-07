@@ -1,13 +1,15 @@
 package com.technogise.leavemanagement.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import com.technogise.leavemanagement.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -150,6 +152,15 @@ public class LeaveServiceTest {
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
 
+    }
+
+    @Test
+    public void Should_MapHalfDayAsNull_When_LeaveTypeIsFullDay() {
+        String leaveType = "full day";
+
+        HalfDay halfDay = leaveService.mapLeaveType(leaveType);
+
+        assertNull(halfDay);
     }
 
 }
