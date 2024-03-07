@@ -181,4 +181,13 @@ public class LeaveServiceTest {
         assertEquals(HalfDay.SECOND_HALF, halfDay);
     }
 
+    @Test
+    public void Should_ReturnOne_WhenLeaveTypeIsFullDay() {
+        String leaveType = "full day";
+
+        double duration = leaveService.getDuration(leaveType);
+
+        assertEquals(1.0, duration);
+    }
+
 }
