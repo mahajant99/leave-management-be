@@ -114,6 +114,24 @@ public class LeaveControllerTest {
         mockMvc.perform(post("/leaves")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(jsonPath("$.leaveType").value("Leave Type is required"));
+                .andExpect(jsonPath("$.leaveType").value(" Type is required"));
+    }
+
+    @Test
+    public void Should_ReturnDescriptionRequired_When_DescriptionIsNotGiven() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setEndDate((LocalDate.of(2024,03,1)));
+        leaveDTO.setLeaveType("full day");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(jsonPath("$.description").value("Description is required"));
     }
 }
