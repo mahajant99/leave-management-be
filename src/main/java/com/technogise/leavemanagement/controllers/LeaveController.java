@@ -21,7 +21,7 @@ public class LeaveController {
     @Autowired
     private LeaveService leaveService;
 
-    @PostMapping("/leaves")
+    @PostMapping
     public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) {
         List<Leave> leaves = leaveService.addLeaves(leaveDTO);
         return leaves.isEmpty() ?
