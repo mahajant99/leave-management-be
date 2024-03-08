@@ -38,7 +38,7 @@ public class ValidationHandlerTest {
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setAttribute("org.springframework.validation.BindingResult.yourObject", validationMessages);
+        request.setAttribute("org.springframework.validation.BindingResult.leaveDTO", validationMessages);
 
         mockMvc.perform(post("/leaves")
                         .contentType(MediaType.APPLICATION_JSON)
