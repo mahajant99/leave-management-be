@@ -46,8 +46,8 @@ public class LeaveControllerTest {
     public void Should_ReturnCreatedResponse_When_LeaveDTOIsValid() throws Exception {
         LeaveDTO leaveDTO = new LeaveDTO();
         leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1)); // Corrected month format
-        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1)); // Corrected month format
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
         leaveDTO.setLeaveType("full day");
         leaveDTO.setDescription("Vacation leave");
 
