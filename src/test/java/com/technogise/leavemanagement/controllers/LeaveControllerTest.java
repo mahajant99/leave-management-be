@@ -84,12 +84,41 @@ public class LeaveControllerTest {
     }
 
     @Test
-    @DisplayName("Given leave Id, when soft delete, then expect status no content")
-    public void testSoftDeleteByLeaveId() throws Exception {
+    @DisplayName("Given a leave Id exists, when soft delete, then expect status no content")
+    public void testSoftDeleteByLeaveIdForNoContent() throws Exception {
         Long id = 1L;
-        doNothing().when(leaveService).remove(id);
 
-        mockMvc.perform(delete("/leaves/{id}", id))
+        when(leaveService.remove(id)).thenReturn("deleted");
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(delete("/leaves/{leavesId}", id))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Given a leave Id does not exists, when soft delete, then expect status not found")
+    public void testSoftDeleteByLeaveIdForNotFound() throws Exception {
+        Long id = 1L;
+
+        when(leaveService.remove(id)).thenReturn(null);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(delete("/leaves/{leavesId}", id))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Given a leave Id exists, when soft delete and and exception occured then return internal server error")
+    public void testSoftDeleteByLeaveIdForInternalServerError() throws Exception {
+        Long id = 1L;
+
+        when(leaveService.remove(id)).thenReturn("serverError");
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(delete("/leaves/{leavesId}", id))
+                .andExpect(status().is5xxServerError());
     }
 }
