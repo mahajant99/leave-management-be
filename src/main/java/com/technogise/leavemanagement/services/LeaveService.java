@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.entities.Leave;
@@ -59,7 +59,8 @@ public class LeaveService {
         List<Leave> addedLeaves = new ArrayList<>();
         Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
 
-        if (!currentUserOptional.isPresent()) return Collections.emptyList();
+        if (!currentUserOptional.isPresent())
+            return Collections.emptyList();
 
         User currentUser = currentUserOptional.get();
 
