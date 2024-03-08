@@ -30,7 +30,14 @@ public class LeaveController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLeave(@PathVariable("id") Long id) {
-        leaveService.remove(id);
-        return ResponseEntity.noContent().build();
+        String result = leaveService.remove(id);
+        if (result == null) {
+            return ResponseEntity.notFound().build();            
+        } else if(result == "deleted") {
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

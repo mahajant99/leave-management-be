@@ -1,4 +1,5 @@
 package com.technogise.leavemanagement.services;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @Transactional
@@ -24,10 +24,18 @@ public class LeaveService {
     }
 
     @SuppressWarnings("null")
-    public void remove(Long id) {
-        Leave leave = leaveRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Leave with id " + id + " not found"));
-        leave.setDeleted(true);
-        leaveRepository.save(leave);
+    public String remove(Long id) {
+        try {
+            Optional<Leave> leave = leaveRepository.findById(id);
+            if (!leave.isPresent()) {
+                return null;
+            }
+            leave.get().setDeleted(true);
+            leaveRepository.save(leave.get());
+            return ("deleted");
+        } catch (Exception e) {
+            String errorMessage = e.toString();
+            return (errorMessage); 
+        }
     }
 }
