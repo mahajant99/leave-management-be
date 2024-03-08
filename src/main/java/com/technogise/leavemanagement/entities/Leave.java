@@ -1,10 +1,7 @@
 package com.technogise.leavemanagement.entities;
-
 import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.technogise.leavemanagement.enums.HalfDay;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

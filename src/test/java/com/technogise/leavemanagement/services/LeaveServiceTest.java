@@ -1,9 +1,7 @@
 package com.technogise.leavemanagement.services;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Arrays;
 import java.time.LocalDate;
-
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
@@ -67,7 +64,7 @@ public class LeaveServiceTest {
 
     @Test
     @DisplayName("Given a user and a leave exists, when you softdelete a leave, then deleted should be set to true.")
-    public void testRemove() {
+    public void shouldRemoveLeaveById() {
         
         Long leaveId = 1L;
         String[] userRole = {"user"};

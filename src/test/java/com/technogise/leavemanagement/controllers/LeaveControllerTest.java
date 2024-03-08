@@ -1,12 +1,11 @@
 package com.technogise.leavemanagement.controllers;
-
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import org.springframework.data.domain.Page;
 import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
-
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
 
@@ -38,6 +36,12 @@ public class LeaveControllerTest {
 
     private MockMvc mockMvc;
 
+    @BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+    }
+
+    @SuppressWarnings("null")
     @Test
     @DisplayName("Given user ID, when retrieving leaves with pagination, then it should succeed")
     public void testRetrieveLeavesSuccess() throws Exception {
@@ -80,12 +84,12 @@ public class LeaveControllerTest {
     }
 
     @Test
-    public void givenLeaveId_whenDeleteLeave_thenStatusNoContent() throws Exception {
+    @DisplayName("Given leave Id, when soft delete, then expect status no content")
+    public void testSoftDeleteByLeaveId() throws Exception {
         Long id = 1L;
         doNothing().when(leaveService).remove(id);
 
         mockMvc.perform(delete("/leaves/{id}", id))
                 .andExpect(status().isNoContent());
     }
-
 }
