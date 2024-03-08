@@ -189,5 +189,4 @@ public class LeaveServiceTest {
 
         assertEquals(1.0, duration);
     }
-
 }
