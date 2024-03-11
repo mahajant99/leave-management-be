@@ -22,10 +22,8 @@ public class LeaveController {
     private LeaveService leaveService;
 
     @PostMapping
-    public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) {
+    public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) throws Exception {
         List<Leave> leaves = leaveService.addLeaves(leaveDTO);
-        return leaves.isEmpty() ?
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() :
-                ResponseEntity.status(HttpStatus.CREATED).body(leaves);
+        return ResponseEntity.status(HttpStatus.CREATED).body(leaves);
     }
 }
