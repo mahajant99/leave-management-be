@@ -1,9 +1,5 @@
 package com.technogise.leavemanagement.services;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +9,11 @@ import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import com.technogise.leavemanagement.repositories.UserRepository;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LeaveService {
@@ -28,6 +29,7 @@ public class LeaveService {
     private static final String SECOND_HALF = "SECONDHALF";
     private static final double FULL_DURATION = 1;
     private static final double HALF_DURATION = 0.5;
+    private static final String USER_NOT_FOUND = "User not found";
 
     public double getDuration(String leaveType) {
         leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
@@ -55,16 +57,16 @@ public class LeaveService {
         return leaveRepository.save(leave);
     }
 
-    public List<Leave> addLeaves(LeaveDTO leaveDTO) {
+    public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
         List<Leave> addedLeaves = new ArrayList<>();
         Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
 
-        if (!currentUserOptional.isPresent())
-            return Collections.emptyList();
+        if (currentUserOptional.isEmpty())
+            throw new Exception(USER_NOT_FOUND);
 
         User currentUser = currentUserOptional.get();
 
-        if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
+        if(leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
             Leave leave = createOneDayLeave(leaveDTO, currentUser);
             addedLeaves.add(leave);
         }
