@@ -1,6 +1,5 @@
 package com.technogise.leavemanagement.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
@@ -11,7 +10,6 @@ import com.technogise.leavemanagement.repositories.LeaveRepository;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +64,7 @@ public class LeaveService {
 
         User currentUser = currentUserOptional.get();
 
-        if(leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
+        if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
             Leave leave = createOneDayLeave(leaveDTO, currentUser);
             addedLeaves.add(leave);
         }
