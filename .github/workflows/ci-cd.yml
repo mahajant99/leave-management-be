@@ -4,8 +4,8 @@ on:
     branches: [main, '*']
 
 jobs:
-  sample-job:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: my-step
-        run: echo "Hello World!"
+      - name: Checkout Code
+        uses: actions/checkout@v4
