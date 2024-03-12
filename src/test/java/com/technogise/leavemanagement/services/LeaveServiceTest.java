@@ -2,14 +2,10 @@ package com.technogise.leavemanagement.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.Optional;
-
-import com.technogise.leavemanagement.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +16,6 @@ import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @ExtendWith(MockitoExtension.class)
 public class LeaveServiceTest {
