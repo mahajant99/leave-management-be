@@ -39,21 +39,29 @@ tasks.named('test') {
 test {
     finalizedBy jacocoTestReport
 }
+
 jacocoTestReport {
     dependsOn test
-}
 
-jacoco {
-    toolVersion = "0.8.11"
-    reportsDirectory = layout.buildDirectory.dir('jacocoReportDir')
-}
-
-jacocoTestReport {
     reports {
         xml.required = false
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                "com/technogise/leavemanagement/entities/**",
+                "com/technogise/leavemanagement/LeaveManagementApplication.class",
+            ])
+        }))
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir('jacocoReportDir')
 }
 
 jacocoTestCoverageVerification {
