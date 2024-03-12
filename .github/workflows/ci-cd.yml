@@ -1,0 +1,11 @@
+name: backend-ci-cd
+on: 
+  push:
+    branches: [main, '*']
+
+jobs:
+  sample-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: my-step
+        run: echo "Hello World!"
