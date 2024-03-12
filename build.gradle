@@ -42,3 +42,8 @@ test {
 jacocoTestReport {
     dependsOn test
 }
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir('jacocoReportDir')
+}
