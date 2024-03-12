@@ -52,6 +52,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
+                "com/technogise/leavemanagement/dtos/**",
                 "com/technogise/leavemanagement/entities/**",
                 "com/technogise/leavemanagement/LeaveManagementApplication.class",
             ])
