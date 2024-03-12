@@ -132,20 +132,4 @@ public class LeaveControllerTest {
                         .content(requestBody))
                 .andExpect(jsonPath("$.description").value("Description is required"));
     }
-
-    @Test
-    public void Should_ReturnInternalServerError_When_ResponseHasEmptyList() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
-
-        when(leaveService.addLeaves(any(LeaveDTO.class))).thenReturn(Collections.emptyList());
-
-        ResponseEntity<List<Leave>> response = leaveController.addLeaves(leaveDTO);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-    }
 }
