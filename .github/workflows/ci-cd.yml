@@ -17,3 +17,5 @@ jobs:
           cache: 'gradle'
       - name: Build Project
         run: ./gradlew build
+      - name: Run tests
+        run: ./gradlew test
