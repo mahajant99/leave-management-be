@@ -17,5 +17,5 @@ jobs:
           cache: 'gradle'
       - name: Build Project
         run: ./gradlew build
-      - name: Run tests
-        run: ./gradlew test
+      - name: Run tests and generate coverage report
+        run: ./gradlew test jacocoTestReport
