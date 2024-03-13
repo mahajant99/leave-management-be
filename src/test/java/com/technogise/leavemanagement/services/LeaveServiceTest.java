@@ -1,6 +1,6 @@
 package com.technogise.leavemanagement.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.time.LocalDate;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
+import com.technogise.leavemanagement.exceptions.LeaveNotFoundException;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,7 +66,7 @@ public class LeaveServiceTest {
 
     @Test
     @DisplayName("Given a user and a leave exists, when you softdelete a leave, then deleted should be set to true.")
-    public void shouldRemoveLeaveById() {
+    public void shouldDeleteLeaveById() {
         
         Long leaveId = 1L;
         String[] userRole = {"user"};
@@ -82,51 +83,19 @@ public class LeaveServiceTest {
 
         when(leaveRepository.findById(leaveId)).thenReturn(java.util.Optional.of(leave));
 
-        String result = leaveService.remove(leaveId);
-        Optional<Leave> response = leaveRepository.findById(leaveId);
+        leaveService.deleteLeave(leaveId);
 
+        Optional<Leave> response = leaveRepository.findById(leaveId);
         assertTrue(response.get().isDeleted());
-        assertEquals(result, "deleted");
     }
     
     @Test
-    @DisplayName("Given a leave does not exists, when you softdelete that leave, then null should be returned.")
-    public void removeShouldReturnNull() {
+    @DisplayName("Given a leave does not exists, when you softdelete that leave, then throw leave not found exception.")
+    public void deleteShouldThrowLeaveNotFoundException() {
         
-        Long leaveId = 1L;
-        Optional<Leave> leave = Optional.empty();
+        Long nonExistentId = 1L;
+        when(leaveRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
-        when(leaveRepository.findById(leaveId)).thenReturn(leave);
-
-        String result = leaveService.remove(leaveId);
-        
-        assertEquals(result,null);
-    }
-
-    @Test
-    @DisplayName("Given a leave exists, when you softdelete that leave and any run time exception exist, then error message should be returned.")
-    public void removeShouldReturnError() {
-        
-        Long leaveId = 1L;
-        String[] userRole = {"user"};
-        User user = new User(001l, "Test User" , "testuser@gmail.com", userRole, null);
-
-        Leave leave = new Leave();
-        leave.setId(leaveId);
-        leave.setDeleted(false);
-        leave.setDate(LocalDate.now());
-        leave.setDuration(1);
-        leave.setDescription("Sick Leave");
-        leave.setHalfDay(null);
-        leave.setUser(user);
-        Exception exception = new RuntimeException("Internal Server Error"); 
-        
-        when(leaveRepository.findById(leaveId)).thenThrow(exception);
-
-        String result = leaveService.remove(leaveId);
-        String errorMessage = exception.toString();
-        
-        assertEquals(result,errorMessage);
-
+        assertThrows(LeaveNotFoundException.class, () -> leaveService.deleteLeave(nonExistentId));
     }
 }

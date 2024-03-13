@@ -1,4 +1,5 @@
 package com.technogise.leavemanagement.controllers;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.technogise.leavemanagement.entities.Leave;
 import org.springframework.data.domain.Page;
 import com.technogise.leavemanagement.services.LeaveService;
@@ -20,7 +22,8 @@ public class LeaveController {
     private LeaveService leaveService;
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId, @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size) {
 
         Page<Leave> leavesPage = leaveService.getLeavesByUserId(userId, page, size);
@@ -29,15 +32,8 @@ public class LeaveController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLeave(@PathVariable("id") Long id) {
-        String result = leaveService.remove(id);
-        if (result == null) {
-            return ResponseEntity.notFound().build();            
-        } else if(result == "deleted") {
-            return ResponseEntity.noContent().build();
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<?> deleteLeave(@PathVariable("id") Long id) {
+        leaveService.deleteLeave(id); 
+        return ResponseEntity.noContent().build();          
     }
 }

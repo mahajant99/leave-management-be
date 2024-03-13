@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.entities.Leave;
+import com.technogise.leavemanagement.exceptions.LeaveNotFoundException;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 
 @Service
@@ -23,19 +24,14 @@ public class LeaveService {
         return leaveRepository.findByUserId(userId, pageable);
     }
 
+    
     @SuppressWarnings("null")
-    public String remove(Long id) {
-        try {
-            Optional<Leave> leave = leaveRepository.findById(id);
+    public void deleteLeave(Long id) throws LeaveNotFoundException {
+        Optional<Leave> leave = leaveRepository.findById(id);
             if (!leave.isPresent()) {
-                return null;
+                throw new LeaveNotFoundException(id);
             }
             leave.get().setDeleted(true);
             leaveRepository.save(leave.get());
-            return ("deleted");
-        } catch (Exception e) {
-            String errorMessage = e.toString();
-            return (errorMessage); 
-        }
     }
 }

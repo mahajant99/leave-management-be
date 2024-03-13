@@ -1,9 +1,9 @@
 package com.technogise.leavemanagement.controllers;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,11 +35,6 @@ public class LeaveControllerTest {
     private LeaveController leaveController;
 
     private MockMvc mockMvc;
-
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
-    }
 
     @SuppressWarnings("null")
     @Test
@@ -88,37 +83,11 @@ public class LeaveControllerTest {
     public void testSoftDeleteByLeaveIdForNoContent() throws Exception {
         Long id = 1L;
 
-        when(leaveService.remove(id)).thenReturn("deleted");
+        doNothing().when(leaveService).deleteLeave(id);
 
         mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
         mockMvc.perform(delete("/leaves/{leavesId}", id))
                 .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("Given a leave Id does not exists, when soft delete, then expect status not found")
-    public void testSoftDeleteByLeaveIdForNotFound() throws Exception {
-        Long id = 1L;
-
-        when(leaveService.remove(id)).thenReturn(null);
-
-        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
-
-        mockMvc.perform(delete("/leaves/{leavesId}", id))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("Given a leave Id exists, when soft delete and and exception occured then return internal server error")
-    public void testSoftDeleteByLeaveIdForInternalServerError() throws Exception {
-        Long id = 1L;
-
-        when(leaveService.remove(id)).thenReturn("serverError");
-
-        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
-
-        mockMvc.perform(delete("/leaves/{leavesId}", id))
-                .andExpect(status().is5xxServerError());
     }
 }
