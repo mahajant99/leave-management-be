@@ -12,8 +12,9 @@ import com.technogise.leavemanagement.exceptions.LeaveNotFoundException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(LeaveNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleLeaveNotFoundException(LeaveNotFoundException leaveNotFoundException){
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(),leaveNotFoundException.getMessage());
+    public ResponseEntity<ErrorResponse> handleLeaveNotFoundException(LeaveNotFoundException leaveNotFoundException) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                leaveNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }    
+    }
 }

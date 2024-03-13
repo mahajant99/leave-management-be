@@ -33,7 +33,7 @@ public class LeaveController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLeave(@PathVariable("id") Long id) {
-        leaveService.deleteLeave(id); 
-        return ResponseEntity.noContent().build();          
+        leaveService.deleteLeave(id);
+        return ResponseEntity.noContent().build();
     }
 }

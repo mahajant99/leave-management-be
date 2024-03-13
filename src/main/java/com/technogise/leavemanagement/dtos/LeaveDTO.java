@@ -1,4 +1,5 @@
 package com.technogise.leavemanagement.dtos;
+
 import lombok.Data;
 import java.time.LocalDate;
 

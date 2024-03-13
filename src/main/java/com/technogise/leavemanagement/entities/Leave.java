@@ -1,4 +1,5 @@
 package com.technogise.leavemanagement.entities;
+
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.technogise.leavemanagement.enums.HalfDay;

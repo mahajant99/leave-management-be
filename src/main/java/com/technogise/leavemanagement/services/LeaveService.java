@@ -1,4 +1,5 @@
 package com.technogise.leavemanagement.services;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,14 +25,13 @@ public class LeaveService {
         return leaveRepository.findByUserId(userId, pageable);
     }
 
-    
     @SuppressWarnings("null")
     public void deleteLeave(Long id) throws LeaveNotFoundException {
         Optional<Leave> leave = leaveRepository.findById(id);
-            if (!leave.isPresent()) {
-                throw new LeaveNotFoundException(id);
-            }
-            leave.get().setDeleted(true);
-            leaveRepository.save(leave.get());
+        if (!leave.isPresent()) {
+            throw new LeaveNotFoundException(id);
+        }
+        leave.get().setDeleted(true);
+        leaveRepository.save(leave.get());
     }
 }
