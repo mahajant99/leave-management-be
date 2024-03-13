@@ -59,6 +59,7 @@ public class LeaveServiceTest {
         Leave newLeave = new Leave();
         newLeave.setHalfDay(HalfDay.FIRSTHALF);
         newLeave.setDuration(0.5);
+        newLeave.setUser(user);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
@@ -66,6 +67,7 @@ public class LeaveServiceTest {
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
+        assertEquals(newLeave.getUser().getId(), createdLeave.getUser().getId());
     }
 
     @Test
