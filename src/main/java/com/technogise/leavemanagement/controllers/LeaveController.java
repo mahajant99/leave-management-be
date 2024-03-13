@@ -34,6 +34,6 @@ public class LeaveController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLeave(@PathVariable("id") Long id) {
         leaveService.deleteLeave(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

@@ -79,7 +79,7 @@ public class LeaveControllerTest {
     }
 
     @Test
-    @DisplayName("Given a leave Id exists, when soft delete, then expect status no content")
+    @DisplayName("Given a leave Id exists, when soft delete, then expect status OK")
     public void testSoftDeleteByLeaveIdForNoContent() throws Exception {
         Long id = 1L;
 
@@ -88,6 +88,6 @@ public class LeaveControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
         mockMvc.perform(delete("/leaves/{leavesId}", id))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }
