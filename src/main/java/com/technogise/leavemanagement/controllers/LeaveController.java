@@ -22,8 +22,7 @@ public class LeaveController {
     private LeaveService leaveService;
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId,
-            @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size) {
 
         Page<Leave> leavesPage = leaveService.getLeavesByUserId(userId, page, size);
