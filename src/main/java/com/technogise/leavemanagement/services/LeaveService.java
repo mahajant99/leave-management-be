@@ -24,24 +24,23 @@ public class LeaveService {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String FULL_DAY = "FULLDAY";
-    private static final String FIRST_HALF = "FIRSTHALF";
-    private static final String SECOND_HALF = "SECONDHALF";
-    private static final double FULL_DURATION = 1;
-    private static final double HALF_DURATION = 0.5;
-    private static final String USER_NOT_FOUND = "User not found";
+    private static final String FULLDAY = "FULLDAY";
+    private static final String FIRSTHALF = "FIRSTHALF";
+    private static final String SECONDHALF = "SECONDHALF";
+    private static final double FULLDURATION = 1;
+    private static final double HALFDURATION = 0.5;
 
     public double getDuration(String leaveType) {
         leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
-        return leaveType.equals(FULL_DAY) ? FULL_DURATION : HALF_DURATION;
+        return leaveType.equals(FULLDAY) ? FULLDURATION : HALFDURATION;
     }
 
     public HalfDay mapLeaveType(String leaveType) {
         leaveType = leaveType.trim().toUpperCase().replaceAll("\\s+", "");
         return switch (leaveType) {
-            case FULL_DAY -> null;
-            case FIRST_HALF -> HalfDay.FIRST_HALF;
-            case SECOND_HALF -> HalfDay.SECOND_HALF;
+            case FULLDAY -> null;
+            case FIRSTHALF -> HalfDay.FIRSTHALF;
+            case SECONDHALF -> HalfDay.SECONDHALF;
             default -> throw new IllegalArgumentException("Unrecognized leave type: " + leaveType);
         };
     }
