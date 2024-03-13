@@ -57,7 +57,7 @@ public class LeaveServiceTest {
         leaveDTO.setLeaveType("first half");
 
         Leave newLeave = new Leave();
-        newLeave.setHalfDay(HalfDay.FIRST_HALF);
+        newLeave.setHalfDay(HalfDay.FIRSTHALF);
         newLeave.setDuration(0.5);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
@@ -78,7 +78,7 @@ public class LeaveServiceTest {
         leaveDTO.setLeaveType("second half");
 
         Leave newLeave = new Leave();
-        newLeave.setHalfDay(HalfDay.SECOND_HALF);
+        newLeave.setHalfDay(HalfDay.SECONDHALF);
         newLeave.setDuration(0.5);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
@@ -164,7 +164,7 @@ public class LeaveServiceTest {
 
         HalfDay halfDay = leaveService.mapLeaveType(leaveType);
 
-        assertEquals(HalfDay.FIRST_HALF, halfDay);
+        assertEquals(HalfDay.FIRSTHALF, halfDay);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class LeaveServiceTest {
 
         HalfDay halfDay = leaveService.mapLeaveType(leaveType);
 
-        assertEquals(HalfDay.SECOND_HALF, halfDay);
+        assertEquals(HalfDay.SECONDHALF, halfDay);
     }
 
     @Test
