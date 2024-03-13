@@ -19,7 +19,7 @@ public class GlobalExceptionHandlerTest {
     private GlobalExceptionHandler globalExceptionHandler;
 
     @Test
-    @DisplayName(value = "Given a leave does not , when Leave not found exception rises , it should return NOT_FOUNd status.")
+    @DisplayName(value = "Given a leave does not exists , when Leave not found exception rises , then should return NOT_FOUND status.")
     public void testLeaveNotFoundGlobalExceptionHandler() {
         Long nonExistentId = 1L;
         int statuscode = HttpStatus.NOT_FOUND.value();
