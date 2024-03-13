@@ -1,5 +1,6 @@
 package com.technogise.leavemanagement.services;
 
+import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
@@ -9,6 +10,7 @@ import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +48,7 @@ public class LeaveService {
 
     public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
         Leave leave = new Leave();
+
         leave.setDate(leaveDTO.getStartDate());
         leave.setDuration(getDuration(leaveDTO.getLeaveType()));
         leave.setDescription(leaveDTO.getDescription());
@@ -60,7 +63,7 @@ public class LeaveService {
         Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
 
         if (currentUserOptional.isEmpty())
-            throw new Exception(USER_NOT_FOUND);
+            throw new UserNotFoundException(leaveDTO.getUserId());
 
         User currentUser = currentUserOptional.get();
 
