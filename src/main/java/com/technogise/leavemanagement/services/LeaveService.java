@@ -82,11 +82,13 @@ public class LeaveService {
         LocalDate currentDate = leaveDTO.getStartDate();
         while (!currentDate.isAfter(leaveDTO.getEndDate())) {
             LeaveDTO newLeaveDTO = new LeaveDTO();
+
             newLeaveDTO.setStartDate(currentDate);
             newLeaveDTO.setEndDate(currentDate);
             newLeaveDTO.setLeaveType(leaveDTO.getLeaveType());
             newLeaveDTO.setDescription(leaveDTO.getDescription());
             newLeaveDTO.setUserId(leaveDTO.getUserId());
+
             Leave leave = createOneDayLeave(newLeaveDTO, user);
             addedLeaves.add(leave);
             currentDate = currentDate.plusDays(1);
