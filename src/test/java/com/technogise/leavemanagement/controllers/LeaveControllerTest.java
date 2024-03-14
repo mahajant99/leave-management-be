@@ -1,9 +1,11 @@
 package com.technogise.leavemanagement.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +16,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.springframework.data.domain.Page;
 import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
-
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
 
@@ -36,6 +36,7 @@ public class LeaveControllerTest {
 
     private MockMvc mockMvc;
 
+    @SuppressWarnings("null")
     @Test
     @DisplayName("Given user ID, when retrieving leaves with pagination, then it should succeed")
     public void testRetrieveLeavesSuccess() throws Exception {
@@ -75,5 +76,18 @@ public class LeaveControllerTest {
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Given a leave Id exists, when soft delete, then expect status OK")
+    public void testSoftDeleteByLeaveIdForNoContent() throws Exception {
+        Long id = 1L;
+
+        doNothing().when(leaveService).deleteLeave(id);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(delete("/leaves/{leavesId}", id))
+                .andExpect(status().isOk());
     }
 }
