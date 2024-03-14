@@ -103,10 +103,9 @@ public class LeaveService {
 
         User currentUser = currentUserOptional.get();
 
-        if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
-            Leave leave = createOneDayLeave(leaveDTO, currentUser);
-            addedLeaves.add(leave);
-        }
-        return addedLeaves;
+        return leaveDTO.getStartDate().equals(leaveDTO.getEndDate()) ?
+                Collections.singletonList(createOneDayLeave(leaveDTO, currentUser)) :
+                createMultiDayLeave(leaveDTO, currentUser, addedLeaves);
+
     }
 }
