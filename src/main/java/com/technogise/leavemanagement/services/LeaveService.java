@@ -1,6 +1,7 @@
 package com.technogise.leavemanagement.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,22 @@ public class LeaveService {
         leave.setUser(user);
 
         return leaveRepository.save(leave);
+    }
+
+    public List<Leave> createMultiDayLeave(LeaveDTO leaveDTO, User user, List<Leave> addedLeaves) {
+        LocalDate currentDate = leaveDTO.getStartDate();
+        while (!currentDate.isAfter(leaveDTO.getEndDate())) {
+            LeaveDTO newLeaveDTO = new LeaveDTO();
+            newLeaveDTO.setStartDate(currentDate);
+            newLeaveDTO.setEndDate(currentDate);
+            newLeaveDTO.setLeaveType(leaveDTO.getLeaveType());
+            newLeaveDTO.setDescription(leaveDTO.getDescription());
+            newLeaveDTO.setUserId(leaveDTO.getUserId());
+            Leave leave = createOneDayLeave(newLeaveDTO, user);
+            addedLeaves.add(leave);
+            currentDate = currentDate.plusDays(1);
+        }
+        return addedLeaves;
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
