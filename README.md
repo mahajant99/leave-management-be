@@ -15,6 +15,12 @@ To run the project as a Spring Boot application: <br/>
 `./gradlew bootRun`<br />
 >Run this command when you have to start the development server <br />
 
+To generate the jacoco test report: <br/>
+`./gradlew jacocoTestReport`<br />
+
+To check the jacoco coverage thresholds: <br/>
+`./gradlew jacocoTestCoverageVerification`<br />
+
 Prerequisites<br/>
 Java 11 or later<br/>
 PostgreSQL 10 or later<br/>
