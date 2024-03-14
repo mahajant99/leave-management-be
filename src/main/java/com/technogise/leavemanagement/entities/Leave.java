@@ -3,6 +3,7 @@ package com.technogise.leavemanagement.entities;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.technogise.leavemanagement.enums.HalfDay;
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,6 +34,7 @@ public class Leave {
 
     private String description;
 
+    @Nullable
     @Enumerated(EnumType.STRING)
     private HalfDay halfDay;
 

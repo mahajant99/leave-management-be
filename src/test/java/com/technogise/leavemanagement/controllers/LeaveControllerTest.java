@@ -1,12 +1,14 @@
 package com.technogise.leavemanagement.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.DisplayName;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.technogise.leavemanagement.dtos.LeaveDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,16 +26,25 @@ import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import java.time.LocalDate;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class LeaveControllerTest {
-
     @Mock
     private LeaveService leaveService;
 
     @InjectMocks
     private LeaveController leaveController;
 
+    @Autowired
     private MockMvc mockMvc;
 
     @SuppressWarnings("null")
@@ -89,5 +100,96 @@ public class LeaveControllerTest {
 
         mockMvc.perform(delete("/leaves/{leavesId}", id))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void Should_ReturnCreatedResponse_When_LeaveDTOIsValid() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setDescription("Vacation leave");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void Should_ReturnStartDateRequired_When_StartDateIsNotGiven() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setDescription("Vacation leave");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(jsonPath("$.startDate").value("Start Date is required"));
+    }
+
+    @Test
+    public void Should_ReturnEndDateRequired_When_EndDateIsNotGiven() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setDescription("Vacation leave");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(jsonPath("$.endDate").value("End Date is required"));
+    }
+
+    @Test
+    public void Should_ReturnLeaveTypeRequired_When_LeaveTypeIsNotGiven() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setEndDate((LocalDate.of(2024,03,1)));
+        leaveDTO.setDescription("Vacation leave");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(jsonPath("$.leaveType").value("Leave Type is required"));
+    }
+
+    @Test
+    public void Should_ReturnDescriptionRequired_When_DescriptionIsNotGiven() throws Exception {
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
+        leaveDTO.setEndDate((LocalDate.of(2024,03,1)));
+        leaveDTO.setLeaveType("full day");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(jsonPath("$.description").value("Description is required"));
     }
 }
