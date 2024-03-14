@@ -22,6 +22,7 @@ jobs:
       - name: Check coverage thresholds
         run: ./gradlew jacocoTestCoverageVerification
       - name: Deploy on render
+        if: github.ref == 'refs/heads/main'
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: curl "$deploy_url"
