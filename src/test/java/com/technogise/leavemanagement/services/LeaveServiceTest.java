@@ -27,12 +27,16 @@ import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.exceptions.LeaveNotFoundException;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
+import com.technogise.leavemanagement.repositories.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class LeaveServiceTest {
 
     @Mock
     private LeaveRepository leaveRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private LeaveService leaveService;
@@ -265,4 +269,23 @@ public class LeaveServiceTest {
 
         assertEquals(1.0, duration);
     }
+
+    @Test
+    public void Should_ReturnOneLeave_When_StartAndEndDateIsSame() throws Exception {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024,04,01));
+        leaveDTO.setEndDate(LocalDate.of(2024,04,01));
+        leaveDTO.setLeaveType("first half");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        List<Leave> addedLeaves = leaveService.addLeaves(leaveDTO);
+
+        assertEquals(1, addedLeaves.size());
+    }
+
 }
