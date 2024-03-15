@@ -1,10 +1,8 @@
 package com.technogise.leavemanagement.entities;
 
 import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.technogise.leavemanagement.enums.HalfDay;
-
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,13 +34,14 @@ public class Leave {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @Nullable
+    @Enumerated(EnumType.STRING)
     private HalfDay halfDay;
 
-    @JsonIgnore
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    private boolean deleted = Boolean.FALSE;
 }

@@ -1,0 +1,1 @@
+ALTER TABLE leaves ADD COLUMN deleted BOOL NOT NULL DEFAULT false;
