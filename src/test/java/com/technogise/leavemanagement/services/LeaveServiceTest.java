@@ -288,4 +288,21 @@ public class LeaveServiceTest {
         assertEquals(1, addedLeaves.size());
     }
 
+    @Test
+    public void Should_ReturnMultipleLeaves_When_StartAndEndDateIsDifferent() throws Exception {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = new LeaveDTO();
+        leaveDTO.setUserId(1L);
+        leaveDTO.setStartDate(LocalDate.of(2024,04,01));
+        leaveDTO.setEndDate(LocalDate.of(2024,04,03));
+        leaveDTO.setLeaveType("first half");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        List<Leave> addedLeaves = leaveService.addLeaves(leaveDTO);
+
+        assertTrue(addedLeaves.size() > 1);
+    }
 }
