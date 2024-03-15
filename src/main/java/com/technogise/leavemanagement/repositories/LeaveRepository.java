@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
-    @Query("SELECT leaveRequest FROM Leave leaveRequest WHERE leaveRequest.user.id = :userId ORDER BY leaveRequest.date DESC")
-    Page<Leave> findByUserId(Long userId, Pageable pageable);
+    Page<Leave> findByUserIdAndDeletedFalseOrderByDateDesc(Long userId, Pageable pageable);
 
 }

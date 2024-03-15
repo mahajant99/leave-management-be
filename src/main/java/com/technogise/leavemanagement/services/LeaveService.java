@@ -38,7 +38,7 @@ public class LeaveService {
     public Page<Leave> getLeavesByUserId(Long userId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "date");
         Pageable pageable = PageRequest.of(page, size, sort);
-        return leaveRepository.findByUserId(userId, pageable);
+        return leaveRepository.findByUserIdAndDeletedFalseOrderByDateDesc(userId, pageable);
     }
 
     @SuppressWarnings("null")
