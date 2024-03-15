@@ -1,6 +1,5 @@
 package com.technogise.leavemanagement.services;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,7 @@ import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
 @Service
+@Transactional
 public class LeaveService {
 
     @Autowired
@@ -41,7 +41,7 @@ public class LeaveService {
         return leaveRepository.findByUserIdAndDeletedFalseOrderByDateDesc(userId, pageable);
     }
 
-    @SuppressWarnings("null")
+    
     public void deleteLeave(Long id) throws LeaveNotFoundException {
         Optional<Leave> leave = leaveRepository.findById(id);
         if (!leave.isPresent()) {
