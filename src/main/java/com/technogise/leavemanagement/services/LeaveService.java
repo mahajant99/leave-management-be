@@ -88,9 +88,7 @@ public class LeaveService {
             newLeaveDTO.setDescription(leaveDTO.getDescription());
             newLeaveDTO.setUserId(leaveDTO.getUserId());
 
-            Leave leave = createOneDayLeave(newLeaveDTO, user);
-            addedLeaves.add(leave);
-
+            addedLeaves.add(createOneDayLeave(newLeaveDTO, user));
             currentDate = currentDate.plusDays(1);
         }
         return addedLeaves;
