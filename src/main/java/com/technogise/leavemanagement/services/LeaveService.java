@@ -78,8 +78,10 @@ public class LeaveService {
         return leaveRepository.save(leave);
     }
 
-    public List<Leave> createMultiDayLeave(LeaveDTO leaveDTO, User currentUser, List<Leave> addedLeaves) {
+    public List<Leave> createMultiDayLeave(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
+        List<Leave> multipleLeaves = new ArrayList<>();
+
         while (!currentDate.isAfter(leaveDTO.getEndDate())) {
             LeaveDTO newLeaveDTO = new LeaveDTO();
 
@@ -88,10 +90,10 @@ public class LeaveService {
             newLeaveDTO.setDescription(leaveDTO.getDescription());
             newLeaveDTO.setUserId(leaveDTO.getUserId());
 
-            addedLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
+            multipleLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
             currentDate = currentDate.plusDays(1);
         }
-        return addedLeaves;
+        return multipleLeaves;
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
