@@ -84,13 +84,13 @@ public class LeaveService {
             LeaveDTO newLeaveDTO = new LeaveDTO();
 
             newLeaveDTO.setStartDate(currentDate);
-            newLeaveDTO.setEndDate(currentDate);
             newLeaveDTO.setLeaveType(leaveDTO.getLeaveType());
             newLeaveDTO.setDescription(leaveDTO.getDescription());
             newLeaveDTO.setUserId(leaveDTO.getUserId());
 
             Leave leave = createOneDayLeave(newLeaveDTO, user);
             addedLeaves.add(leave);
+
             currentDate = currentDate.plusDays(1);
         }
         return addedLeaves;
@@ -108,6 +108,5 @@ public class LeaveService {
         return leaveDTO.getStartDate().equals(leaveDTO.getEndDate()) ?
                 Collections.singletonList(createOneDayLeave(leaveDTO, currentUser)) :
                 createMultiDayLeave(leaveDTO, currentUser, addedLeaves);
-
     }
 }
