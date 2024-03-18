@@ -52,12 +52,13 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void Should_ReturnUserNotFound_When_UserIdIsInvalid() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(12L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 16))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(12L)
+                .leaveType("full day")
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
