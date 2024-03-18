@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
+import com.technogise.leavemanagement.entities.User;
 import org.junit.jupiter.api.DisplayName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -22,6 +24,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.springframework.data.domain.Page;
+
 import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
 import com.technogise.leavemanagement.entities.Leave;
@@ -119,6 +122,49 @@ public class LeaveControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void Should_ReturnListOfLeaves_When_LeaveDTOHasDateInRange() throws Exception {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 03, 01))
+                .endDate(LocalDate.of(2024, 03, 02))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
+
+        Leave leave1 = new Leave();
+        leave1.setUser(user);
+        leave1.setDate(LocalDate.of(2024, 03, 01));
+        leave1.setDuration(1.0);
+        leave1.setDescription("Vacation");
+        leave1.setHalfDay(null);
+
+        Leave leave2 = new Leave();
+        leave2.setUser(user);
+        leave2.setDate(LocalDate.of(2024, 03, 02));
+        leave2.setDuration(1.0);
+        leave2.setDescription("Vacation");
+        leave2.setHalfDay(null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String requestBody = objectMapper.writeValueAsString(leaveDTO);
+
+        mockMvc.perform(post("/leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$[0].date").value(LocalDate.of(2024, 03, 01).toString()))
+                .andExpect(jsonPath("$[0].duration").value(1.0))
+                .andExpect(jsonPath("$[0].description").value("Vacation"))
+                .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 03, 02).toString()))
+                .andExpect(jsonPath("$[1].duration").value(1.0))
+                .andExpect(jsonPath("$[1].description").value("Vacation"));
     }
 
     @Test
