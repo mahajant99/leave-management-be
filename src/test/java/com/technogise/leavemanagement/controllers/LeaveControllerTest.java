@@ -47,7 +47,6 @@ public class LeaveControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    
     @Test
     @DisplayName("Given user ID, when retrieving leaves with pagination, then it should succeed")
     public void testRetrieveLeavesSuccess() throws Exception {

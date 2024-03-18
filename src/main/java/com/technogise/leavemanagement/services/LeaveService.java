@@ -41,7 +41,6 @@ public class LeaveService {
         return leaveRepository.findByUserIdAndDeletedFalseOrderByDateDesc(userId, pageable);
     }
 
-    
     public void deleteLeave(Long id) throws LeaveNotFoundException {
         Optional<Leave> leave = leaveRepository.findById(id);
         if (!leave.isPresent()) {
