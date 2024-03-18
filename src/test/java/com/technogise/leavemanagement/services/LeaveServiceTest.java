@@ -271,38 +271,71 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_ReturnOneLeave_When_StartAndEndDateIsSame() throws Exception {
+    public void Should_AddASingleLeave_When_StartAndEndDateIsSame() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = new LeaveDTO();
         leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024,04,01));
-        leaveDTO.setEndDate(LocalDate.of(2024,04,01));
-        leaveDTO.setLeaveType("first half");
+        leaveDTO.setStartDate(LocalDate.of(2024, 04, 01));
+        leaveDTO.setEndDate(LocalDate.of(2024, 04, 01));
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setDescription("Vacation leave");
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        List<Leave> addedLeaves = leaveService.addLeaves(leaveDTO);
+        Leave savedLeave = new Leave();
+        savedLeave.setUser(user);
+        savedLeave.setDate(leaveDTO.getStartDate());
+        savedLeave.setDescription(leaveDTO.getDescription());
+        savedLeave.setHalfDay(null);
+        savedLeave.setDuration(1.0);
 
-        assertEquals(1, addedLeaves.size());
+        when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave);
+
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+
+        assertEquals(LocalDate.of(2024, 04, 01), createdLeaves.get(0).getDate());
+        assertEquals(1, createdLeaves.get(0).getDuration());
+        assertNull(createdLeaves.get(0).getHalfDay());
+        assertEquals(leaveDTO.getDescription(), createdLeaves.get(0).getDescription());
+        assertEquals(1, createdLeaves.get(0).getDuration());
+        assertEquals(user, createdLeaves.get(0).getUser());
     }
 
     @Test
-    public void Should_ReturnMultipleLeaves_When_StartAndEndDateIsDifferent() throws Exception {
+    public void Should_AddMultipleLeaves_When_StartAndEndDateIsDifferent() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = new LeaveDTO();
         leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024,04,01));
-        leaveDTO.setEndDate(LocalDate.of(2024,04,03));
-        leaveDTO.setLeaveType("first half");
+        leaveDTO.setStartDate(LocalDate.of(2024, 3, 16));
+        leaveDTO.setEndDate(LocalDate.of(2024, 3, 17));
+        leaveDTO.setLeaveType("full day");
+        leaveDTO.setDescription("Vacation leave");
 
+        Leave savedLeave1 = new Leave();
+        savedLeave1.setUser(user);
+        savedLeave1.setDate(leaveDTO.getStartDate());
+        savedLeave1.setDescription(leaveDTO.getDescription());
+        savedLeave1.setHalfDay(null);
+        savedLeave1.setDuration(1.0);
+
+        Leave savedLeave2 = new Leave();
+        savedLeave2.setUser(user);
+        savedLeave2.setDate(leaveDTO.getEndDate());
+        savedLeave2.setDescription(leaveDTO.getDescription());
+        savedLeave2.setHalfDay(null);
+        savedLeave2.setDuration(1.0);
+
+        when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave1, savedLeave2);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        List<Leave> addedLeaves = leaveService.addLeaves(leaveDTO);
+        List<Leave> leaves = leaveService.addLeaves(leaveDTO);
 
-        assertTrue(addedLeaves.size() > 1);
+        assertEquals(2, leaves.size());
+        assertEquals(LocalDate.of(2024, 03, 16), leaves.get(0).getDate());
+        assertEquals(LocalDate.of(2024, 03, 17), leaves.get(1).getDate());
     }
 }
