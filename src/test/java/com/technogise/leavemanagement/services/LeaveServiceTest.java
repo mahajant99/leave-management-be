@@ -332,10 +332,18 @@ public class LeaveServiceTest {
         when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave1, savedLeave2);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        List<Leave> leaves = leaveService.addLeaves(leaveDTO);
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
 
-        assertEquals(2, leaves.size());
-        assertEquals(LocalDate.of(2024, 03, 16), leaves.get(0).getDate());
-        assertEquals(LocalDate.of(2024, 03, 17), leaves.get(1).getDate());
+        assertEquals(LocalDate.of(2024, 03, 16), createdLeaves.get(0).getDate());
+        assertEquals(1, createdLeaves.get(0).getDuration());
+        assertEquals(leaveDTO.getDescription(), createdLeaves.get(0).getDescription());
+        assertNull(createdLeaves.get(0).getHalfDay());
+        assertEquals(user, createdLeaves.get(0).getUser());
+
+        assertEquals(LocalDate.of(2024, 03, 17), createdLeaves.get(1).getDate());
+        assertEquals(1, createdLeaves.get(1).getDuration());
+        assertEquals(leaveDTO.getDescription(), createdLeaves.get(1).getDescription());
+        assertNull(createdLeaves.get(1).getHalfDay());
+        assertEquals(user, createdLeaves.get(1).getUser());
     }
 }
