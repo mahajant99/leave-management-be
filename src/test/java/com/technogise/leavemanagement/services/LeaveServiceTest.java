@@ -48,7 +48,7 @@ public class LeaveServiceTest {
         Long userId = 1L;
         int page = 0;
         int size = 10;
-        String[] roles = { "User" };
+        String[] roles = {"User"};
         Sort sort = Sort.by(Sort.Direction.DESC, "date");
         PageRequest pageable = PageRequest.of(page, size, sort);
 
@@ -79,7 +79,7 @@ public class LeaveServiceTest {
     public void shouldDeleteLeaveById() {
 
         Long leaveId = 1L;
-        String[] userRole = { "user" };
+        String[] userRole = {"user"};
         User user = new User(001l, "Test User", "testuser@gmail.com", userRole, null);
 
         Leave leave = new Leave();
@@ -108,15 +108,16 @@ public class LeaveServiceTest {
 
         assertThrows(LeaveNotFoundException.class, () -> leaveService.deleteLeave(nonExistentId));
     }
-    
+
     @Test
     public void Should_HaveHalfDayNull_When_LeaveTypeIsFullDay() {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("full day");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         Leave newLeave = new Leave();
         newLeave.setHalfDay(null);
@@ -135,9 +136,10 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("first half");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(1L)
+                .leaveType("first half")
+                .build();
 
         Leave newLeave = new Leave();
         newLeave.setHalfDay(HalfDay.FIRSTHALF);
@@ -158,9 +160,10 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("second half");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(1L)
+                .leaveType("second half")
+                .build();
 
         Leave newLeave = new Leave();
         newLeave.setHalfDay(HalfDay.SECONDHALF);
@@ -179,10 +182,11 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setStartDate(LocalDate.of(2022, 3, 5));
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(1L)
+                .startDate(LocalDate.of(2022, 3, 5))
+                .leaveType("full day")
+                .build();
 
         Leave newLeave = new Leave();
         newLeave.setDate(LocalDate.of(2022, 3, 5));
@@ -199,9 +203,11 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("full day");
+
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         Leave newLeave = new Leave();
         newLeave.setDuration(1);
@@ -219,9 +225,10 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setLeaveType("full day");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(1L)
+                .leaveType("first half")
+                .build();
 
         Leave newLeave = new Leave();
         newLeave.setDuration(0.5);
@@ -275,12 +282,13 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 04, 01));
-        leaveDTO.setEndDate(LocalDate.of(2024, 04, 01));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 04, 01))
+                .endDate(LocalDate.of(2024, 04, 01))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -310,12 +318,13 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 3, 16));
-        leaveDTO.setEndDate(LocalDate.of(2024, 3, 17));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 16))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         Leave savedLeave1 = new Leave();
         savedLeave1.setUser(user);
