@@ -295,12 +295,14 @@ public class LeaveServiceTest {
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
 
-        assertEquals(LocalDate.of(2024, 04, 01), createdLeaves.get(0).getDate());
-        assertEquals(1, createdLeaves.get(0).getDuration());
-        assertNull(createdLeaves.get(0).getHalfDay());
-        assertEquals(leaveDTO.getDescription(), createdLeaves.get(0).getDescription());
-        assertEquals(1, createdLeaves.get(0).getDuration());
-        assertEquals(user, createdLeaves.get(0).getUser());
+        Leave createdLeave = createdLeaves.get(0);
+
+        assertEquals(LocalDate.of(2024, 04, 01), createdLeave.getDate());
+        assertEquals(1, createdLeave.getDuration());
+        assertNull(createdLeave.getHalfDay());
+        assertEquals(leaveDTO.getDescription(), createdLeave.getDescription());
+        assertEquals(1, createdLeave.getDuration());
+        assertEquals(user, createdLeave.getUser());
     }
 
     @Test
