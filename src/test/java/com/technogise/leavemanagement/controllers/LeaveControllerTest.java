@@ -103,12 +103,13 @@ public class LeaveControllerTest {
 
     @Test
     public void Should_ReturnCreatedResponse_When_LeaveDTOIsValid() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 03, 1))
+                .endDate(LocalDate.of(2024, 03, 1))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -122,11 +123,12 @@ public class LeaveControllerTest {
 
     @Test
     public void Should_ReturnStartDateRequired_When_StartDateIsNotGiven() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -140,11 +142,12 @@ public class LeaveControllerTest {
 
     @Test
     public void Should_ReturnEndDateRequired_When_EndDateIsNotGiven() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 16))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -158,11 +161,12 @@ public class LeaveControllerTest {
 
     @Test
     public void Should_ReturnLeaveTypeRequired_When_LeaveTypeIsNotGiven() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setEndDate((LocalDate.of(2024,03,1)));
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 16))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -176,11 +180,12 @@ public class LeaveControllerTest {
 
     @Test
     public void Should_ReturnDescriptionRequired_When_DescriptionIsNotGiven() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(1L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setEndDate((LocalDate.of(2024,03,1)));
-        leaveDTO.setLeaveType("full day");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 16))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .userId(1L)
+                .leaveType("full day")
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
