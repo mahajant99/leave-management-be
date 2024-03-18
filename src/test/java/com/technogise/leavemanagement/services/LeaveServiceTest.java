@@ -360,4 +360,22 @@ public class LeaveServiceTest {
         assertNull(createdLeave2.getHalfDay());
         assertEquals(user, createdLeave2.getUser());
     }
+
+    @Test
+    public void Should_ReturnEmptyList_When_StartDateIsAfterEndDate() {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 17))
+                .endDate(LocalDate.of(2024, 3, 16))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType("full day")
+                .build();
+
+        List<Leave> createdLeaves = leaveService.createMultiDayLeave(leaveDTO, user);
+
+        assertEquals(0, createdLeaves.size());
+    }
 }
