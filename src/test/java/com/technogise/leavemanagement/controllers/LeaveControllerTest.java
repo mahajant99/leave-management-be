@@ -1,5 +1,7 @@
 package com.technogise.leavemanagement.controllers;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -7,6 +9,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.entities.User;
+import com.technogise.leavemanagement.repositories.LeaveRepository;
 import org.junit.jupiter.api.DisplayName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,20 +23,26 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+
 import static org.hamcrest.Matchers.notNullValue;
+
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
 import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -165,6 +174,19 @@ public class LeaveControllerTest {
                 .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 03, 02).toString()))
                 .andExpect(jsonPath("$[1].duration").value(1.0))
                 .andExpect(jsonPath("$[1].description").value("Vacation"));
+
+        Leave createdLeave1 = leaveRepository.save(leave1);
+        Leave createdLeave2 = leaveRepository.save(leave2);
+
+        assertThat(createdLeave1.getDate()).isEqualTo(LocalDate.of(2024, 03, 01));
+        assertThat(createdLeave1.getDuration()).isEqualTo(1.0);
+        assertThat(createdLeave1.getDescription()).isEqualTo("Vacation");
+        assertNull(createdLeave1.getHalfDay());
+
+        assertThat(createdLeave2.getDate()).isEqualTo(LocalDate.of(2024, 03, 02));
+        assertThat(createdLeave2.getDuration()).isEqualTo(1.0);
+        assertThat(createdLeave2.getDescription()).isEqualTo("Vacation");
+        assertNull(createdLeave2.getHalfDay());
     }
 
     @Test
