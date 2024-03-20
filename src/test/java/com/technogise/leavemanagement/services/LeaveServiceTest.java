@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import com.technogise.leavemanagement.enums.LeaveType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -116,7 +117,7 @@ public class LeaveServiceTest {
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         Leave newLeave = new Leave();
@@ -138,7 +139,7 @@ public class LeaveServiceTest {
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
-                .leaveType("first half")
+                .leaveType(String.valueOf(LeaveType.FIRSTHALF))
                 .build();
 
         Leave newLeave = new Leave();
@@ -162,7 +163,7 @@ public class LeaveServiceTest {
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
-                .leaveType("second half")
+                .leaveType(String.valueOf(LeaveType.SECONDHALF))
                 .build();
 
         Leave newLeave = new Leave();
@@ -185,7 +186,7 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .startDate(LocalDate.of(2022, 3, 5))
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         Leave newLeave = new Leave();
@@ -205,7 +206,7 @@ public class LeaveServiceTest {
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         Leave newLeave = new Leave();
@@ -225,7 +226,7 @@ public class LeaveServiceTest {
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
-                .leaveType("first half")
+                .leaveType(String.valueOf(LeaveType.FIRSTHALF))
                 .build();
 
         Leave newLeave = new Leave();
@@ -249,7 +250,7 @@ public class LeaveServiceTest {
 
     @Test
     public void Should_MapHalfDayAsFirstHalf_When_LeaveTypeIsFirstHalf() {
-        String leaveType = "first half";
+        String leaveType = String.valueOf(LeaveType.FIRSTHALF);
 
         HalfDay halfDay = leaveService.mapLeaveType(leaveType);
 
@@ -258,7 +259,7 @@ public class LeaveServiceTest {
 
     @Test
     public void Should_MapHalfDayAsSecondHalf_When_LeaveTypeIsSecondHalf() {
-        String leaveType = "second half";
+        String leaveType = String.valueOf(LeaveType.SECONDHALF);
 
         HalfDay halfDay = leaveService.mapLeaveType(leaveType);
 
@@ -267,7 +268,7 @@ public class LeaveServiceTest {
 
     @Test
     public void Should_ReturnOne_WhenLeaveTypeIsFullDay() {
-        String leaveType = "full day";
+        String leaveType = String.valueOf(LeaveType.FULLDAY);
 
         double duration = leaveService.getDuration(leaveType);
 
@@ -284,7 +285,7 @@ public class LeaveServiceTest {
                 .endDate(LocalDate.of(2024, 04, 01))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -320,7 +321,7 @@ public class LeaveServiceTest {
                 .endDate(LocalDate.of(2024, 3, 17))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         Leave savedLeave1 = new Leave();
@@ -368,7 +369,7 @@ public class LeaveServiceTest {
                 .endDate(LocalDate.of(2024, 3, 16))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         List<Leave> createdLeaves = leaveService.createMultiDayLeave(leaveDTO, user);
