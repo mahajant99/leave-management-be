@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import com.technogise.leavemanagement.entities.User;
+import com.technogise.leavemanagement.enums.LeaveType;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import org.junit.jupiter.api.DisplayName;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,7 +111,7 @@ public class LeaveControllerTest {
                 .endDate(LocalDate.of(2024, 03, 1))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -133,7 +134,7 @@ public class LeaveControllerTest {
                 .endDate(LocalDate.of(2024, 04, 02))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         Leave leave1 = new Leave();
@@ -180,7 +181,7 @@ public class LeaveControllerTest {
                 .endDate(LocalDate.of(2024, 3, 17))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -199,7 +200,7 @@ public class LeaveControllerTest {
                 .startDate(LocalDate.of(2024, 3, 16))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -237,7 +238,7 @@ public class LeaveControllerTest {
                 .startDate(LocalDate.of(2024, 3, 16))
                 .endDate(LocalDate.of(2024, 3, 17))
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
