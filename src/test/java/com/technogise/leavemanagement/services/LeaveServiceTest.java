@@ -203,7 +203,6 @@ public class LeaveServiceTest {
         User user = new User();
         user.setId(1L);
 
-
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType("full day")
@@ -217,7 +216,6 @@ public class LeaveServiceTest {
         Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
-
     }
 
     @Test
@@ -238,7 +236,6 @@ public class LeaveServiceTest {
         Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
-
     }
 
     @Test
