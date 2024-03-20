@@ -83,14 +83,18 @@ public class LeaveService {
         List<Leave> multipleLeaves = new ArrayList<>();
 
         while (!currentDate.isAfter(leaveDTO.getEndDate())) {
-            LeaveDTO newLeaveDTO =  LeaveDTO.builder()
-                    .startDate(currentDate)
-                    .description(leaveDTO.getDescription())
-                    .userId(leaveDTO.getUserId())
-                    .leaveType(leaveDTO.getLeaveType())
-                    .build();
+            Optional<Leave> existingLeave = leaveRepository.findByUserAndDate(currentUser, currentDate);
 
-            multipleLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
+            if (existingLeave.isEmpty()) {
+                LeaveDTO newLeaveDTO = LeaveDTO.builder()
+                        .startDate(currentDate)
+                        .description(leaveDTO.getDescription())
+                        .userId(leaveDTO.getUserId())
+                        .leaveType(leaveDTO.getLeaveType())
+                        .build();
+
+                multipleLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
+            }
             currentDate = currentDate.plusDays(1);
         }
         return multipleLeaves;
