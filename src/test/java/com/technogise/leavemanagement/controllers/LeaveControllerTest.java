@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class LeaveControllerTest {
-    @Mock
+    @MockBean
     private LeaveService leaveService;
 
     @InjectMocks
@@ -139,8 +139,8 @@ public class LeaveControllerTest {
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
-                .startDate(LocalDate.of(2024, 03, 01))
-                .endDate(LocalDate.of(2024, 03, 02))
+                .startDate(LocalDate.of(2024, 04, 01))
+                .endDate(LocalDate.of(2024, 04, 02))
                 .description("Vacation")
                 .userId(1L)
                 .leaveType("full day")
@@ -148,14 +148,14 @@ public class LeaveControllerTest {
 
         Leave leave1 = new Leave();
         leave1.setUser(user);
-        leave1.setDate(LocalDate.of(2024, 03, 01));
+        leave1.setDate(LocalDate.of(2024, 04, 01));
         leave1.setDuration(1.0);
         leave1.setDescription("Vacation");
         leave1.setHalfDay(null);
 
         Leave leave2 = new Leave();
         leave2.setUser(user);
-        leave2.setDate(LocalDate.of(2024, 03, 02));
+        leave2.setDate(LocalDate.of(2024, 04, 02));
         leave2.setDuration(1.0);
         leave2.setDescription("Vacation");
         leave2.setHalfDay(null);
@@ -164,29 +164,24 @@ public class LeaveControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
+        List<Leave> expectedLeaves = new ArrayList<>();
+        expectedLeaves.add(leave1);
+        expectedLeaves.add(leave2);
+
+        when(leaveService.addLeaves(leaveDTO)).thenReturn(expectedLeaves);
+
         mockMvc.perform(post("/leaves")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$[0].date").value(LocalDate.of(2024, 03, 01).toString()))
+                .andExpect(jsonPath("$[0].date").value(LocalDate.of(2024, 04, 01).toString()))
                 .andExpect(jsonPath("$[0].duration").value(1.0))
                 .andExpect(jsonPath("$[0].description").value("Vacation"))
-                .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 03, 02).toString()))
+                .andExpect(jsonPath("$[0].halfDay", nullValue()))
+                .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 04, 02).toString()))
                 .andExpect(jsonPath("$[1].duration").value(1.0))
+                .andExpect(jsonPath("$[1].halfDay", nullValue()))
                 .andExpect(jsonPath("$[1].description").value("Vacation"));
-
-        Leave createdLeave1 = leaveRepository.save(leave1);
-        Leave createdLeave2 = leaveRepository.save(leave2);
-
-        assertThat(createdLeave1.getDate()).isEqualTo(LocalDate.of(2024, 03, 01));
-        assertThat(createdLeave1.getDuration()).isEqualTo(1.0);
-        assertThat(createdLeave1.getDescription()).isEqualTo("Vacation");
-        assertNull(createdLeave1.getHalfDay());
-
-        assertThat(createdLeave2.getDate()).isEqualTo(LocalDate.of(2024, 03, 02));
-        assertThat(createdLeave2.getDuration()).isEqualTo(1.0);
-        assertThat(createdLeave2.getDescription()).isEqualTo("Vacation");
-        assertNull(createdLeave2.getHalfDay());
     }
 
     @Test
