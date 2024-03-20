@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.technogise.leavemanagement.enums.LeaveType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class GlobalExceptionHandlerTest {
                 .endDate(LocalDate.of(2024, 3, 17))
                 .description("Vacation")
                 .userId(12L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
