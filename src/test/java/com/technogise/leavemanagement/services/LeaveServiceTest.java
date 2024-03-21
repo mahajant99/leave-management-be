@@ -63,7 +63,7 @@ public class LeaveServiceTest {
         List<Leave> leaves = Arrays.asList(leave1, leave2);
         Page<Leave> expectedPage = new PageImpl<>(leaves, pageable, leaves.size());
 
-        when(leaveRepository.findByUserId(userId, pageable)).thenReturn(expectedPage);
+        when(leaveRepository.findByUserIdAndDeletedFalseOrderByDateDesc(userId, pageable)).thenReturn(expectedPage);
 
         Page<Leave> resultPage = leaveService.getLeavesByUserId(userId, page, size);
 
