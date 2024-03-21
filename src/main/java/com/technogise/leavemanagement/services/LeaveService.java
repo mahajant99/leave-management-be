@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +68,13 @@ public class LeaveService {
         };
     }
 
-    public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
+    public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) throws LeaveAlreadyExistsException {
         Leave leave = new Leave();
+        Optional<Leave> existingLeave = leaveRepository.findByUserAndDate(user, leaveDTO.getStartDate());
+
+        if (existingLeave.isPresent()) {
+            throw new LeaveAlreadyExistsException(leaveDTO.getStartDate());
+        }
 
         leave.setDate(leaveDTO.getStartDate());
         leave.setDuration(getDuration(leaveDTO.getLeaveType()));
