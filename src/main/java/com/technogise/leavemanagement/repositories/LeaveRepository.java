@@ -15,5 +15,5 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     Page<Leave> findByUserIdAndDeletedFalseOrderByDateDesc(Long userId, Pageable pageable);
 
-    Optional<Leave> findByUserAndDate(User user, LocalDate date);
+    Optional<Leave> findByUserIdAndDate(Long userId, LocalDate date);
 }
