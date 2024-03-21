@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.technogise.leavemanagement.enums.LeaveType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +53,13 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void Should_ReturnUserNotFound_When_UserIdIsInvalid() throws Exception {
-        LeaveDTO leaveDTO = new LeaveDTO();
-        leaveDTO.setUserId(12L);
-        leaveDTO.setStartDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setEndDate(LocalDate.of(2024, 03, 1));
-        leaveDTO.setLeaveType("full day");
-        leaveDTO.setDescription("Vacation leave");
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 16))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(12L)
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

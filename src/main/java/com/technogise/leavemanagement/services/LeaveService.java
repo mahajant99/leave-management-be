@@ -1,6 +1,8 @@
 package com.technogise.leavemanagement.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +79,25 @@ public class LeaveService {
         return leaveRepository.save(leave);
     }
 
+    public List<Leave> createMultiDayLeave(LeaveDTO leaveDTO, User currentUser) {
+        LocalDate currentDate = leaveDTO.getStartDate();
+        List<Leave> multipleLeaves = new ArrayList<>();
+
+        while (!currentDate.isAfter(leaveDTO.getEndDate())) {
+            LeaveDTO newLeaveDTO =  LeaveDTO.builder()
+                    .startDate(currentDate)
+                    .description(leaveDTO.getDescription())
+                    .userId(leaveDTO.getUserId())
+                    .leaveType(leaveDTO.getLeaveType())
+                    .build();
+
+            multipleLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
+            currentDate = currentDate.plusDays(1);
+        }
+        return multipleLeaves;
+    }
+
     public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
-        List<Leave> addedLeaves = new ArrayList<>();
         Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
 
         if (currentUserOptional.isEmpty())
@@ -87,9 +106,8 @@ public class LeaveService {
         User currentUser = currentUserOptional.get();
 
         if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
-            Leave leave = createOneDayLeave(leaveDTO, currentUser);
-            addedLeaves.add(leave);
+            return Collections.singletonList(createOneDayLeave(leaveDTO, currentUser));
         }
-        return addedLeaves;
+        return createMultiDayLeave(leaveDTO, currentUser);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class ValidationHandlerTest {
 
         List<String> validationMessages = Arrays.asList("ID is required", "Leave Type is required", "Start Date is required", "End Date is required", "Description is required");
 
-        LeaveDTO leaveDTO = new LeaveDTO();
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
