@@ -69,39 +69,24 @@ public class LeaveService {
         };
     }
 
-    public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) throws LeaveAlreadyExistsException {
-        Leave leave = new Leave();
-        Optional<Leave> existingLeave = leaveRepository.findByUserAndDate(user, leaveDTO.getStartDate());
 
-        if (existingLeave.isPresent()) {
-            throw new LeaveAlreadyExistsException(leaveDTO.getStartDate());
-        }
-
-        leave.setDate(leaveDTO.getStartDate());
-        leave.setDuration(getDuration(leaveDTO.getLeaveType()));
-        leave.setDescription(leaveDTO.getDescription());
-        leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
-        leave.setUser(user);
-
-        return leaveRepository.save(leave);
-    }
-
-    public List<Leave> createMultiDayLeave(LeaveDTO leaveDTO, User currentUser) {
+    public List<Leave> createLeaves(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
         List<Leave> multipleLeaves = new ArrayList<>();
 
         while (!currentDate.isAfter(leaveDTO.getEndDate())) {
-            Optional<Leave> existingLeave = leaveRepository.findByUserAndDate(currentUser, currentDate);
+            Optional<Leave> existingLeave = leaveRepository.findByUserIdAndDate(currentUser.getId(), currentDate);
 
             if (existingLeave.isEmpty()) {
-                LeaveDTO newLeaveDTO = LeaveDTO.builder()
-                        .startDate(currentDate)
-                        .description(leaveDTO.getDescription())
-                        .userId(leaveDTO.getUserId())
-                        .leaveType(leaveDTO.getLeaveType())
-                        .build();
+                Leave leave = new Leave();
 
-                multipleLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
+                leave.setDate(currentDate);
+                leave.setDuration(getDuration(leaveDTO.getLeaveType()));
+                leave.setDescription(leaveDTO.getDescription());
+                leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
+                leave.setUser(currentUser);
+
+                multipleLeaves.add(leaveRepository.save(leave));
             }
             currentDate = currentDate.plusDays(1);
         }
