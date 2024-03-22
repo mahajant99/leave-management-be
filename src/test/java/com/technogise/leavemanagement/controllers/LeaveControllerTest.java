@@ -1,7 +1,7 @@
 package com.technogise.leavemanagement.controllers;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.entities.User;
+import com.technogise.leavemanagement.enums.LeaveType;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import org.junit.jupiter.api.DisplayName;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,23 +18,20 @@ import com.technogise.leavemanagement.dtos.LeaveDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static org.hamcrest.Matchers.notNullValue;
-
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class LeaveControllerTest {
-    @Mock
+    @MockBean
     private LeaveService leaveService;
 
     @InjectMocks
@@ -120,7 +118,7 @@ public class LeaveControllerTest {
                 .endDate(LocalDate.of(2024, 03, 1))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -139,23 +137,23 @@ public class LeaveControllerTest {
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
-                .startDate(LocalDate.of(2024, 03, 01))
-                .endDate(LocalDate.of(2024, 03, 02))
+                .startDate(LocalDate.of(2024, 04, 01))
+                .endDate(LocalDate.of(2024, 04, 02))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         Leave leave1 = new Leave();
         leave1.setUser(user);
-        leave1.setDate(LocalDate.of(2024, 03, 01));
+        leave1.setDate(LocalDate.of(2024, 04, 01));
         leave1.setDuration(1.0);
         leave1.setDescription("Vacation");
         leave1.setHalfDay(null);
 
         Leave leave2 = new Leave();
         leave2.setUser(user);
-        leave2.setDate(LocalDate.of(2024, 03, 02));
+        leave2.setDate(LocalDate.of(2024, 04, 02));
         leave2.setDuration(1.0);
         leave2.setDescription("Vacation");
         leave2.setHalfDay(null);
@@ -164,15 +162,23 @@ public class LeaveControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
+        List<Leave> expectedLeaves = new ArrayList<>();
+        expectedLeaves.add(leave1);
+        expectedLeaves.add(leave2);
+
+        when(leaveService.addLeaves(leaveDTO)).thenReturn(expectedLeaves);
+
         mockMvc.perform(post("/leaves")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$[0].date").value(LocalDate.of(2024, 03, 01).toString()))
+                .andExpect(jsonPath("$[0].date").value(LocalDate.of(2024, 04, 01).toString()))
                 .andExpect(jsonPath("$[0].duration").value(1.0))
                 .andExpect(jsonPath("$[0].description").value("Vacation"))
-                .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 03, 02).toString()))
+                .andExpect(jsonPath("$[0].halfDay", nullValue()))
+                .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 04, 02).toString()))
                 .andExpect(jsonPath("$[1].duration").value(1.0))
+                .andExpect(jsonPath("$[1].halfDay", nullValue()))
                 .andExpect(jsonPath("$[1].description").value("Vacation"));
     }
 
@@ -182,7 +188,7 @@ public class LeaveControllerTest {
                 .endDate(LocalDate.of(2024, 3, 17))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -201,7 +207,7 @@ public class LeaveControllerTest {
                 .startDate(LocalDate.of(2024, 3, 16))
                 .description("Vacation")
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -239,7 +245,7 @@ public class LeaveControllerTest {
                 .startDate(LocalDate.of(2024, 3, 16))
                 .endDate(LocalDate.of(2024, 3, 17))
                 .userId(1L)
-                .leaveType("full day")
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
