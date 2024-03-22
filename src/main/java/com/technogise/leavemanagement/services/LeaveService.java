@@ -101,6 +101,11 @@ public class LeaveService {
 
         User currentUser = currentUserOptional.get();
 
-        return createLeaves(leaveDTO, currentUser);
+        List<Leave> createdLeaves = createLeaves(leaveDTO, currentUser);
+
+        if(createdLeaves.isEmpty()) {
+            throw new LeaveAlreadyExistsException();
+        }
+        return createdLeaves;
     }
 }
