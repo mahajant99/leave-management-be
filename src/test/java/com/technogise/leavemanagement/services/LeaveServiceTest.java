@@ -118,6 +118,8 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -126,7 +128,8 @@ public class LeaveServiceTest {
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertNull(createdLeave.getHalfDay());
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
@@ -140,6 +143,8 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FIRSTHALF))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -149,7 +154,8 @@ public class LeaveServiceTest {
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
@@ -164,6 +170,8 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.SECONDHALF))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -172,7 +180,8 @@ public class LeaveServiceTest {
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
@@ -186,6 +195,7 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
@@ -194,7 +204,8 @@ public class LeaveServiceTest {
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(leaveDTO.getStartDate(), createdLeave.getDate());
     }
@@ -207,6 +218,8 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -214,7 +227,8 @@ public class LeaveServiceTest {
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
@@ -227,6 +241,8 @@ public class LeaveServiceTest {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FIRSTHALF))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -234,7 +250,8 @@ public class LeaveServiceTest {
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
@@ -372,7 +389,7 @@ public class LeaveServiceTest {
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
-        List<Leave> createdLeaves = leaveService.createMultiDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
 
         assertEquals(0, createdLeaves.size());
     }
