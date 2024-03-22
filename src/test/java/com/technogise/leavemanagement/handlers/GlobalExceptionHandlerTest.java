@@ -85,7 +85,7 @@ public class GlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> responseEntity = globalExceptionHandler
                 .handleLeaveAlreadyExistsException(new LeaveAlreadyExistsException());
 
-        assertEquals(statusCode, responseEntity.getStatusCodeValue());
+        assertEquals(statusCode, responseEntity.getStatusCode().value());
         assertEquals(errorResponse, responseEntity.getBody());
     }
 }
