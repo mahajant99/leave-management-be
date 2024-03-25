@@ -6,6 +6,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.enums.LeaveType;
+import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
+import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -392,5 +394,39 @@ public class LeaveServiceTest {
         List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
 
         assertEquals(0, createdLeaves.size());
+    }
+
+    @Test
+    public void Should_ThrowUserDoesNotExistsException_When_AUserDoesNotExists() {
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 17))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .build();
+
+        when(userRepository.findById(leaveDTO.getUserId())).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> leaveService.addLeaves(leaveDTO));
+    }
+
+    @Test
+    public void Should_ThrowLeaveAlreadyExists_When_ADuplicateLeaveIsAdded() {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 17))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .build();
+
+        when(userRepository.findById(leaveDTO.getUserId())).thenReturn(Optional.of(user));
+        when(leaveRepository.existsByUserIdAndDateAndDeletedFalse(user.getId(), leaveDTO.getStartDate())).thenReturn(true);
+
+        assertThrows(LeaveAlreadyExistsException.class, () -> leaveService.addLeaves(leaveDTO));
     }
 }
