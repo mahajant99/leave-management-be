@@ -2,7 +2,6 @@ package com.technogise.leavemanagement.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,12 +71,12 @@ public class LeaveService {
 
     public List<Leave> createLeaves(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
-        List<Leave> multipleLeaves = new ArrayList<>();
+        List<Leave> createdLeaves = new ArrayList<>();
 
         while (!currentDate.isAfter(leaveDTO.getEndDate())) {
-            Optional<Leave> existingLeave = leaveRepository.findByUserIdAndDate(currentUser.getId(), currentDate);
+            boolean existingLeave = leaveRepository.existsByUserIdAndDateAndDeletedFalse(currentUser.getId(), currentDate);
 
-            if (existingLeave.isEmpty()) {
+            if (!existingLeave) {
                 Leave leave = new Leave();
 
                 leave.setDate(currentDate);
@@ -86,11 +85,11 @@ public class LeaveService {
                 leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
                 leave.setUser(currentUser);
 
-                multipleLeaves.add(leaveRepository.save(leave));
+                createdLeaves.add(leaveRepository.save(leave));
             }
-            currentDate = currentDate.plusDays(1);
+                currentDate = currentDate.plusDays(1);
         }
-        return multipleLeaves;
+        return createdLeaves;
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
