@@ -269,7 +269,7 @@ public class LeaveServiceTest {
 
     @Test
     public void Should_MapHalfDayAsNull_When_LeaveTypeIsFullDay() {
-        String leaveType = "full day";
+        String leaveType = String.valueOf(LeaveType.FULLDAY);
 
         HalfDay halfDay = leaveService.mapLeaveType(leaveType);
 
