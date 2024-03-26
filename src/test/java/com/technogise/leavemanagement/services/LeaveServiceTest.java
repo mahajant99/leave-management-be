@@ -76,6 +76,39 @@ public class LeaveServiceTest {
     }
 
     @Test
+    @DisplayName("Given pagination/sorting parameters and leaves exist, when fetching leaves, then the expected page of leaves is returned")
+    void shouldFetchAllLeaves() {
+
+        Long userId = 1L;
+        int page = 0;
+        int size = 10;
+        String[] roles = {"User","Admin"};
+        Sort sort = Sort.by(Sort.Direction.DESC, "date");
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
+        User user = new User(userId, "Summer", "summer@gmail", roles, null);
+
+        Leave leave1 = new Leave();
+        leave1.setId(1L);
+        leave1.setUser(user);
+        leave1.setDate(LocalDate.now());
+
+        Leave leave2 = new Leave();
+        leave2.setId(2L);
+        leave2.setUser(user);
+        leave2.setDate(LocalDate.now().minusDays(1));
+
+        List<Leave> leaves = Arrays.asList(leave1, leave2);
+        Page<Leave> expectedPage = new PageImpl<>(leaves, pageable, leaves.size());
+
+        when(leaveRepository.findByDeletedFalseOrderByDateDesc(pageable)).thenReturn(expectedPage);
+
+        Page<Leave> resultPage = leaveService.getAllLeaves(page, size);
+
+        assertEquals(expectedPage, resultPage);
+    }
+
+    @Test
     @DisplayName("Given a user and a leave exists, when you softdelete a leave, then deleted should be set to true.")
     public void shouldDeleteLeaveById() {
 
