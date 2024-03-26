@@ -25,9 +25,12 @@ public class LeaveController {
     @Autowired
     private LeaveService leaveService;
 
+    private static final String defaultPageSize = "6";
+    private static final String defaultPageCount = "0";
+
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId, @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size) {
+    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId, @RequestParam(defaultPageCount) int page,
+            @RequestParam(defaultPageSize) int size) {
 
         Page<Leave> leavesPage = leaveService.getLeavesByUserId(userId, page, size);
         return leavesPage.isEmpty() ? new ResponseEntity<Page<Leave>>(HttpStatus.NO_CONTENT)
@@ -35,8 +38,8 @@ public class LeaveController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Leave>> getAllLeaves(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size) {
+    public ResponseEntity<Page<Leave>> getAllLeaves(@RequestParam(defaultPageCount) int page,
+            @RequestParam(defaultPageSize) int size) {
 
         Page<Leave> leavesPage = leaveService.getAllLeaves(page, size);
         return new ResponseEntity<Page<Leave>>(leavesPage, HttpStatus.OK);
