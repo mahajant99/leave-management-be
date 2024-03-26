@@ -11,4 +11,5 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     Page<Leave> findByUserIdAndDeletedFalseOrderByDateDesc(Long userId, Pageable pageable);
 
+    Page<Leave> findByDeletedFalseOrderByDateDesc(Pageable pageable);
 }
