@@ -34,6 +34,14 @@ public class LeaveController {
                 : new ResponseEntity<Page<Leave>>(leavesPage, HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Page<Leave>> getAllLeaves(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size) {
+
+        Page<Leave> leavesPage = leaveService.getAllLeaves(page, size);
+        return new ResponseEntity<Page<Leave>>(leavesPage, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLeave(@PathVariable("id") Long id) {
         leaveService.deleteLeave(id);
