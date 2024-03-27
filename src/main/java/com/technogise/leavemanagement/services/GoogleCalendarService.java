@@ -2,6 +2,8 @@ package com.technogise.leavemanagement.services;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -18,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.time.ZoneId;
 
-
+@Service
 public class GoogleCalendarService {
 
     private static final String CALENDAR_ID = "abf2ff4f7bcc921456b336e2a7dc80b3daa936d455cdbcebdbc8e24473a8c175@group.calendar.google.com";
@@ -27,7 +29,7 @@ public class GoogleCalendarService {
     private static final String APPLICATION_NAME = "LeaveManagement";
     private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     private static final String KOLKATA_TIME_ZONE = "Asia/Kolkata";
-    private static final String ON_LEAVE = "on leave";
+    private static final String ON_LEAVE = " on leave";
     private static final Double FULL_DAY = 1.0;
 
 
@@ -40,7 +42,8 @@ public class GoogleCalendarService {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     
-        String SUMMARY = leave.getDuration() == FULL_DAY ? leave.getUser().getName() + ON_LEAVE : leave.getUser().getName() + ON_LEAVE + leave.getHalfDay().toString();
+        String SUMMARY = leave.getDuration() == FULL_DAY ? leave.getUser().getName() + ON_LEAVE : leave.getUser().getName() + ON_LEAVE + "(" + leave.getHalfDay().toString() + ")";
+
         
         Event event = new Event()
                 .setSummary(SUMMARY);
@@ -63,7 +66,6 @@ public class GoogleCalendarService {
         event.setEnd(end);
     
         service.events().insert(CALENDAR_ID, event).execute();
-
     }
     
 }
