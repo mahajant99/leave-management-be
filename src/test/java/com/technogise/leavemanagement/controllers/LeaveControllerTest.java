@@ -73,6 +73,27 @@ public class LeaveControllerTest {
     }
 
     @Test
+    @DisplayName("Given leaves exist, when retrieving leaves with pagination, then it should succeed")
+    public void testRetrieveAllLeavesSuccess() throws Exception {
+        int page = 0;
+        int size = 6;
+
+        Leave leave = new Leave();
+        leave.setId(2L);
+        Page<Leave> mockPage = new PageImpl<>(List.of(leave), PageRequest.of(page, size), 1);
+
+        when(leaveService.getAllLeaves(anyInt(), anyInt())).thenReturn(mockPage);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(get("/leaves")
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
+    }
+
+    @Test
     @DisplayName("Given a user ID and pagination parameters, when retrieving leaves, then expect no content")
     public void testRetrieveLeavesNoContent() throws Exception {
         Long userId = 1L;
