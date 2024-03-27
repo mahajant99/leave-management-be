@@ -8,7 +8,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.LeaveType;
-import com.technogise.leavemanagement.repositories.LeaveRepository;
 import org.junit.jupiter.api.DisplayName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

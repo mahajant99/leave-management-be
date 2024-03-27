@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.technogise.leavemanagement.entities.Leave;
 
+import java.time.LocalDate;
+
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     Page<Leave> findByUserIdAndDeletedFalseOrderByDateDesc(Long userId, Pageable pageable);
 
+    boolean existsByUserIdAndDateAndDeletedFalse(Long userId, LocalDate date);
 }

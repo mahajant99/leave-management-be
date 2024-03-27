@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.technogise.leavemanagement.enums.LeaveType;
+import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,5 +74,18 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.statusCode").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.message").value("User not found: " + leaveDTO.getUserId()));
 
+    }
+
+    @Test
+    public void Should_HandleLeaveAlreadyExistsException_When_LeaveAlreadyExistsExceptionIsThrown() throws Exception {
+        int statusCode = HttpStatus.BAD_REQUEST.value();
+        String errorMessage = "Leave already exists";
+        ErrorResponse errorResponse = new ErrorResponse(statusCode, errorMessage);
+
+        ResponseEntity<ErrorResponse> responseEntity = globalExceptionHandler
+                .handleLeaveAlreadyExistsException(new LeaveAlreadyExistsException());
+
+        assertEquals(statusCode, responseEntity.getStatusCode().value());
+        assertEquals(errorResponse, responseEntity.getBody());
     }
 }

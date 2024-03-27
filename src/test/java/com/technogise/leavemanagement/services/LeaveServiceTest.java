@@ -6,6 +6,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.enums.LeaveType;
+import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
+import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -111,13 +113,15 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_HaveHalfDayNull_When_LeaveTypeIsFullDay() {
+    public void Should_HaveHalfDayNull_When_LeaveTypeIsFullDay() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -125,21 +129,25 @@ public class LeaveServiceTest {
         newLeave.setDuration(1);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertNull(createdLeave.getHalfDay());
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
 
     @Test
-    public void Should_HaveHalfDayAsFirstHalf_When_LeaveTypeIsFirstHalf() {
+    public void Should_HaveHalfDayAsFirstHalf_When_LeaveTypeIsFirstHalf() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FIRSTHALF))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -148,8 +156,11 @@ public class LeaveServiceTest {
         newLeave.setUser(user);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
@@ -157,13 +168,15 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_HaveHalfDaySecondHalf_When_LeaveTypeIsSecondHalf() {
+    public void Should_HaveHalfDaySecondHalf_When_LeaveTypeIsSecondHalf() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.SECONDHALF))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
@@ -171,21 +184,25 @@ public class LeaveServiceTest {
         newLeave.setDuration(0.5);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
     }
 
     @Test
-    public void Should_HaveDateSetCorrectly_When_CreatingLeave() {
+    public void Should_HaveDateSetCorrectly_When_CreatingLeave() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
@@ -193,55 +210,66 @@ public class LeaveServiceTest {
         newLeave.setDate(LocalDate.of(2022, 3, 5));
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(leaveDTO.getStartDate(), createdLeave.getDate());
     }
 
     @Test
-    public void Should_HaveDurationSetToOne_When_LeaveTypeIsFullDay() {
+    public void Should_HaveDurationSetToOne_When_LeaveTypeIsFullDay() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
         newLeave.setDuration(1);
 
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
 
     @Test
-    public void Should_HaveDurationSetToZeroPointFive_When_LeaveTypeIsHalfDay() {
+    public void Should_HaveDurationSetToZeroPointFive_When_LeaveTypeIsHalfDay() throws Exception {
         User user = new User();
         user.setId(1L);
 
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FIRSTHALF))
+                .startDate(LocalDate.of(2022, 3, 5))
+                .endDate(LocalDate.of(2022, 3, 5))
                 .build();
 
         Leave newLeave = new Leave();
         newLeave.setDuration(0.5);
 
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
 
-        Leave createdLeave = leaveService.createOneDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
+        Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
     }
 
     @Test
     public void Should_MapHalfDayAsNull_When_LeaveTypeIsFullDay() {
-        String leaveType = "full day";
+        String leaveType = String.valueOf(LeaveType.FULLDAY);
 
         HalfDay halfDay = leaveService.mapLeaveType(leaveType);
 
@@ -360,7 +388,7 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_ReturnEmptyList_When_StartDateIsAfterEndDate() {
+    public void Should_ReturnEmptyList_When_StartDateIsAfterEndDate() throws Exception {
         User user = new User();
         user.setId(1L);
 
@@ -372,8 +400,42 @@ public class LeaveServiceTest {
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
-        List<Leave> createdLeaves = leaveService.createMultiDayLeave(leaveDTO, user);
+        List<Leave> createdLeaves = leaveService.createLeaves(leaveDTO, user);
 
         assertEquals(0, createdLeaves.size());
+    }
+
+    @Test
+    public void Should_ThrowUserDoesNotExistsException_When_AUserDoesNotExists() {
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 17))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .build();
+
+        when(userRepository.findById(leaveDTO.getUserId())).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> leaveService.addLeaves(leaveDTO));
+    }
+
+    @Test
+    public void Should_ThrowLeaveAlreadyExists_When_ADuplicateLeaveIsAdded() {
+        User user = new User();
+        user.setId(1L);
+
+        LeaveDTO leaveDTO = LeaveDTO.builder()
+                .startDate(LocalDate.of(2024, 3, 17))
+                .endDate(LocalDate.of(2024, 3, 17))
+                .description("Vacation")
+                .userId(1L)
+                .leaveType(String.valueOf(LeaveType.FULLDAY))
+                .build();
+
+        when(userRepository.findById(leaveDTO.getUserId())).thenReturn(Optional.of(user));
+        when(leaveRepository.existsByUserIdAndDateAndDeletedFalse(user.getId(), leaveDTO.getStartDate())).thenReturn(true);
+
+        assertThrows(LeaveAlreadyExistsException.class, () -> leaveService.addLeaves(leaveDTO));
     }
 }
