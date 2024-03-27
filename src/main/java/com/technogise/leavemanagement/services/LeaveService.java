@@ -2,9 +2,10 @@ package com.technogise.leavemanagement.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,34 +74,28 @@ public class LeaveService {
         };
     }
 
-    public Leave createOneDayLeave(LeaveDTO leaveDTO, User user) {
-        Leave leave = new Leave();
 
-        leave.setDate(leaveDTO.getStartDate());
-        leave.setDuration(getDuration(leaveDTO.getLeaveType()));
-        leave.setDescription(leaveDTO.getDescription());
-        leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
-        leave.setUser(user);
-
-        return leaveRepository.save(leave);
-    }
-
-    public List<Leave> createMultiDayLeave(LeaveDTO leaveDTO, User currentUser) {
+    public List<Leave> createLeaves(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
-        List<Leave> multipleLeaves = new ArrayList<>();
+        List<Leave> createdLeaves = new ArrayList<>();
 
         while (!currentDate.isAfter(leaveDTO.getEndDate())) {
-            LeaveDTO newLeaveDTO =  LeaveDTO.builder()
-                    .startDate(currentDate)
-                    .description(leaveDTO.getDescription())
-                    .userId(leaveDTO.getUserId())
-                    .leaveType(leaveDTO.getLeaveType())
-                    .build();
+            boolean existingLeave = leaveRepository.existsByUserIdAndDateAndDeletedFalse(currentUser.getId(), currentDate);
 
-            multipleLeaves.add(createOneDayLeave(newLeaveDTO, currentUser));
-            currentDate = currentDate.plusDays(1);
+            if (!existingLeave) {
+                Leave leave = new Leave();
+
+                leave.setDate(currentDate);
+                leave.setDuration(getDuration(leaveDTO.getLeaveType()));
+                leave.setDescription(leaveDTO.getDescription());
+                leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
+                leave.setUser(currentUser);
+
+                createdLeaves.add(leaveRepository.save(leave));
+            }
+                currentDate = currentDate.plusDays(1);
         }
-        return multipleLeaves;
+        return createdLeaves;
     }
 
     public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
@@ -111,9 +106,11 @@ public class LeaveService {
 
         User currentUser = currentUserOptional.get();
 
-        if (leaveDTO.getStartDate().equals(leaveDTO.getEndDate())) {
-            return Collections.singletonList(createOneDayLeave(leaveDTO, currentUser));
+        List<Leave> createdLeaves = createLeaves(leaveDTO, currentUser);
+
+        if(createdLeaves.isEmpty()) {
+            throw new LeaveAlreadyExistsException();
         }
-        return createMultiDayLeave(leaveDTO, currentUser);
+        return createdLeaves;
     }
 }
