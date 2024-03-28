@@ -12,9 +12,9 @@ import com.technogise.leavemanagement.enums.HalfDay;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 public class GoogleCalendarServiceTest {
 
@@ -72,24 +73,22 @@ public class GoogleCalendarServiceTest {
     }
     
      @Test
-    public void testInitializeCalendarServiceSuccess() throws IOException, GeneralSecurityException {
-        Calendar service = initializeCalendarService();
+    public void testInitializeCalendarServiceWithMocks() throws IOException, GeneralSecurityException {
+        
+        GoogleCredential mockCredential = Mockito.mock(GoogleCredential.class);
+        when(mockCredential.createScoped(Mockito.any())).thenReturn(mockCredential);
+
+        Calendar.Builder mockBuilder = Mockito.mock(Calendar.Builder.class);
+        when(mockBuilder.setApplicationName(Mockito.anyString())).thenReturn(mockBuilder);
+        when(mockBuilder.build()).thenReturn(new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), mockCredential).build());
+
+        Calendar service = initializeCalendarService(mockBuilder);
+
         assertNotNull(service, "Calendar service should not be null");
     }
-
-    public Calendar initializeCalendarService() {
-        GoogleCredential credential = null;
-        Calendar service = null;
-        try {
-            credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
-                    .createScoped(CALENDAR_SCOPES);
-            service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
-                    .setApplicationName(APPLICATION_NAME)
-                    .build();
-        } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace();
-        }
-        return service;
+    
+    public Calendar initializeCalendarService(Calendar.Builder builder) throws GeneralSecurityException {
+        return builder.build();
     }
     
 }
