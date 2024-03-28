@@ -92,3 +92,22 @@ jacocoTestCoverageVerification {
         }
     }
 }
+
+sonarLint {
+    isGeneratedCodeIgnored = false
+
+    rules {
+        disable(
+                'java:S6813',
+                'java:S5786'
+        )
+    }
+
+    languages {
+        include('java')
+    }
+
+    ignoredPaths.add('**/dtos/**')
+    ignoredPaths.add('**/LeaveManagementApplication.class')
+    ignoredPaths.add('**/LeaveManagementApplicationTests.java')
+}
