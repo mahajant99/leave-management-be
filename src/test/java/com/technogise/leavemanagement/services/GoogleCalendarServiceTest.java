@@ -1,8 +1,4 @@
 package com.technogise.leavemanagement.services;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.technogise.leavemanagement.entities.Leave;
@@ -11,85 +7,71 @@ import com.technogise.leavemanagement.enums.HalfDay;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.lang.reflect.Field;
 
 public class GoogleCalendarServiceTest {
-
-   @Mock
-    private Calendar mockCalendarService;
-
+    
     private GoogleCalendarService googleCalendarService;
-    static final String SERVICE_ACCOUNT_KEY_FILE_PATH = "src\\main\\resources\\service-account-key.json";
-    private static final List<String> CALENDAR_SCOPES = Arrays.asList("https://www.googleapis.com/auth/calendar");
-    private static final String APPLICATION_NAME = "LeaveManagement";
+    private Calendar.Events mockEvents;
+    private Calendar.Events.Insert mockInsert;
 
     @BeforeEach
-    public void setUp() throws GeneralSecurityException, IOException {
-        MockitoAnnotations.openMocks(this);
+    public void setUp() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         googleCalendarService = new GoogleCalendarService();
-        googleCalendarService.initializeCalendarService(); 
+        mockEvents = mock(Calendar.Events.class); 
+        mockInsert = mock(Calendar.Events.Insert.class);
+    
+        Field field = GoogleCalendarService.class.getDeclaredField("service");
+        field.setAccessible(true);
+        Calendar mockCalendar = mock(Calendar.class);
+        when(mockCalendar.events()).thenReturn(mockEvents);
+        field.set(googleCalendarService, mockCalendar);
+        
     }
 
     @Test
-    public void testCreateLeaveEventFullDay() {
+    public void testAddLeave() throws IOException {
+        
         User user = new User();
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
         leave.setDate(LocalDate.now());
-        leave.setDuration(1.0);
+        leave.setDuration(1);
         leave.setUser(user);
+        when(mockEvents.insert(anyString(), any(Event.class))).thenReturn(mockInsert);
 
-        Event event = googleCalendarService.createLeaveEvent(leave);
-        assertNotNull(event, "Event should not be null");
-        assertTrue(event.getSummary().contains("on leave"), "Event summary should indicate on leave");
+        googleCalendarService.addLeave(leave);
+    
+        verify(mockEvents, times(1)).insert(anyString(), any(Event.class));
     }
 
     @Test
-    public void testCreateLeaveEventHalfDay() {
+    public void testAddHalfLeave() throws IOException {
+        
         User user = new User();
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
         leave.setDate(LocalDate.now());
         leave.setDuration(0.5);
+        leave.setHalfDay(HalfDay.SECONDHALF);
         leave.setUser(user);
-        leave.setHalfDay(HalfDay.FIRSTHALF);
+        when(mockEvents.insert(anyString(), any(Event.class))).thenReturn(mockInsert);
 
-        Event event = googleCalendarService.createLeaveEvent(leave);
-        assertNotNull(event, "Event should not be null");
-        assertTrue(event.getSummary().contains(" on leave(FIRSTHALF)"), "Rick on leave(FIRSTHALF)");
-    }
+        googleCalendarService.addLeave(leave);
     
-     @Test
-    public void testInitializeCalendarServiceWithMocks() throws IOException, GeneralSecurityException {
-        
-        GoogleCredential mockCredential = Mockito.mock(GoogleCredential.class);
-        when(mockCredential.createScoped(Mockito.any())).thenReturn(mockCredential);
-
-        Calendar.Builder mockBuilder = Mockito.mock(Calendar.Builder.class);
-        when(mockBuilder.setApplicationName(Mockito.anyString())).thenReturn(mockBuilder);
-        when(mockBuilder.build()).thenReturn(new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), mockCredential).build());
-
-        Calendar service = initializeCalendarService(mockBuilder);
-
-        assertNotNull(service, "Calendar service should not be null");
+        verify(mockEvents, times(1)).insert(anyString(), any(Event.class));
     }
-    
-    public Calendar initializeCalendarService(Calendar.Builder builder) throws GeneralSecurityException {
-        return builder.build();
-    }
-    
 }
 

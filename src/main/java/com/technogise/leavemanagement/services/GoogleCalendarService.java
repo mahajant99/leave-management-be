@@ -30,23 +30,22 @@ public class GoogleCalendarService {
     private static final String KOLKATA_TIME_ZONE = "Asia/Kolkata";
     private static final String ON_LEAVE = " on leave";
     private static final Double FULL_DAY = 1.0;
+    private Calendar service = null;
 
-    public Calendar initializeCalendarService() {
-        GoogleCredential credential = null;
-        Calendar service = null;
+     GoogleCalendarService() {
         try {
-            credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
+            GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
                         .createScoped(CALENDAR_SCOPES);
-            service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
+            this.service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
                     .setApplicationName(APPLICATION_NAME)
                     .build();
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
-        return service;
+        
     }
 
-    public Event createLeaveEvent(Leave leave) {
+    private Event createLeaveEvent(Leave leave) {
         String SUMMARY = leave.getDuration() == FULL_DAY ? leave.getUser().getName() + ON_LEAVE : leave.getUser().getName() + ON_LEAVE + "(" + leave.getHalfDay().toString() + ")";
     
         Event event = new Event()
@@ -74,11 +73,10 @@ public class GoogleCalendarService {
     
     public void addLeave(Leave leave){
 
-        Calendar service = initializeCalendarService();
         Event event = createLeaveEvent(leave);
     
         try {
-            service.events().insert(CALENDAR_ID, event).execute();
+            this.service.events().insert(CALENDAR_ID, event).execute();
         } catch (IOException e) {
             
             e.printStackTrace();
