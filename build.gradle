@@ -107,7 +107,6 @@ sonarLint {
         include('java')
     }
 
-    ignoredPaths.add('**/dtos/**')
-    ignoredPaths.add('**/LeaveManagementApplication.class')
+    ignoredPaths.add('**/LeaveManagementApplication.java')
     ignoredPaths.add('**/LeaveManagementApplicationTests.java')
 }
