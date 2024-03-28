@@ -13,7 +13,6 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.technogise.leavemanagement.entities.Leave;
 import com.google.api.services.calendar.Calendar;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
@@ -32,40 +31,57 @@ public class GoogleCalendarService {
     private static final String ON_LEAVE = " on leave";
     private static final Double FULL_DAY = 1.0;
 
+    public Calendar initializeCalendarService() {
+        GoogleCredential credential = null;
+        Calendar service = null;
+        try {
+            credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
+                        .createScoped(CALENDAR_SCOPES);
+            service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+        } catch (IOException | GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        return service;
+    }
 
-    public void addLeave(Leave leave) throws FileNotFoundException, IOException, GeneralSecurityException{
-
-        GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
-                    .createScoped(CALENDAR_SCOPES);
-    
-        Calendar service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-    
+    public Event createLeaveEvent(Leave leave) {
         String SUMMARY = leave.getDuration() == FULL_DAY ? leave.getUser().getName() + ON_LEAVE : leave.getUser().getName() + ON_LEAVE + "(" + leave.getHalfDay().toString() + ")";
-
-        
+    
         Event event = new Event()
                 .setSummary(SUMMARY);
     
         ZoneId kolkataZoneId = ZoneId.of(KOLKATA_TIME_ZONE);
         Date startDate = Date.from(leave.getDate().atStartOfDay(kolkataZoneId).toInstant());
         Date endDate = Date.from(leave.getDate().plusDays(1).atStartOfDay(kolkataZoneId).toInstant());
-                
+    
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_PATTERN);
         String startDateStr = dateFormat.format(startDate);
         String endDateStr = dateFormat.format(endDate);
-                
+    
         DateTime startDateTime = new DateTime(startDateStr);
         DateTime endDateTime = new DateTime(endDateStr);
-                
+    
         EventDateTime start = new EventDateTime().setDate(startDateTime);
         EventDateTime end = new EventDateTime().setDate(endDateTime);
-                
+    
         event.setStart(start);
         event.setEnd(end);
     
-        service.events().insert(CALENDAR_ID, event).execute();
+        return event;
     }
     
+    public void addLeave(Leave leave){
+
+        Calendar service = initializeCalendarService();
+        Event event = createLeaveEvent(leave);
+    
+        try {
+            service.events().insert(CALENDAR_ID, event).execute();
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+        }
+    }
 }
