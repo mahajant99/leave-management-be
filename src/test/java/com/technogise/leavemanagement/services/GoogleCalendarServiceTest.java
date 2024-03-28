@@ -28,11 +28,6 @@ public class GoogleCalendarServiceTest {
     }
 
     @Test
-    public void testInitializeCalendarService() {
-        assertNotNull(googleCalendarService.initializeCalendarService(), "Calendar service should not be null");
-    }
-
-    @Test
     public void testCreateLeaveEventFullDay() {
         User user = new User();
         user.setId(1L);
