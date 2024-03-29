@@ -32,6 +32,9 @@ public class LeaveService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GoogleCalendarService googleCalendarService;
+
     private static final String FULLDAY = "FULLDAY";
     private static final String FIRSTHALF = "FIRSTHALF";
     private static final String SECONDHALF = "SECONDHALF";
@@ -90,8 +93,14 @@ public class LeaveService {
                 leave.setDescription(leaveDTO.getDescription());
                 leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
                 leave.setUser(currentUser);
+                
+                Leave savedLeave = leaveRepository.save(leave);
+                
+                if(savedLeave.getId()!=null){
+                    googleCalendarService.addLeave(leave);
+                }
 
-                createdLeaves.add(leaveRepository.save(leave));
+                createdLeaves.add(savedLeave);
             }
                 currentDate = currentDate.plusDays(1);
         }

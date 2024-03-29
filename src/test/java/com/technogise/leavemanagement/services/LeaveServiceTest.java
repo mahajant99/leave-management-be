@@ -2,6 +2,7 @@ package com.technogise.leavemanagement.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +42,9 @@ public class LeaveServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    GoogleCalendarService googleCalendarService;
 
     @InjectMocks
     private LeaveService leaveService;
@@ -293,6 +298,8 @@ public class LeaveServiceTest {
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        Mockito.lenient().when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
