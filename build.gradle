@@ -99,7 +99,8 @@ sonarLint {
     rules {
         disable(
                 'java:S6813',
-                'java:S5786'
+                'java:S5786',
+                'java:S2293'
         )
     }
 
