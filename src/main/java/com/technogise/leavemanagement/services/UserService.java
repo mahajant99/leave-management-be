@@ -5,6 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.technogise.leavemanagement.configs.JWTUtils;
+import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +36,9 @@ public class UserService {
                 .setAudience(Collections.singletonList(clientId))
                 .build();
     }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+    
 }
