@@ -36,4 +36,10 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Leave> leaves;
+
+    public User(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
 }
