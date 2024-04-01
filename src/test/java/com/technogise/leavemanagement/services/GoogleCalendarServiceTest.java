@@ -6,7 +6,9 @@ import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.HalfDay;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,6 +20,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class GoogleCalendarServiceTest {
     
@@ -40,6 +44,7 @@ public class GoogleCalendarServiceTest {
     }
 
     @Test
+    @DisplayName("Given a full-day leave, when added, then it should be created as an event in Google Calendar")
     public void testAddLeave() throws IOException {
         
         User user = new User();
@@ -54,9 +59,17 @@ public class GoogleCalendarServiceTest {
         googleCalendarService.addLeave(leave);
     
         verify(mockEvents, times(1)).insert(anyString(), any(Event.class));
+    
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(mockEvents).insert(anyString(), eventCaptor.capture());
+
+        Event capturedEvent = eventCaptor.getValue();
+        assertThat(leave.getDate().toString()).isEqualTo(capturedEvent.getStart().getDate().toString());
+        assertThat("Rick on leave").isEqualTo(capturedEvent.getSummary());
     }
 
     @Test
+    @DisplayName("Given a half-day leave, when added, then it should be created as an event in Google Calendar")
     public void testAddHalfLeave() throws IOException {
         
         User user = new User();
@@ -72,6 +85,13 @@ public class GoogleCalendarServiceTest {
         googleCalendarService.addLeave(leave);
     
         verify(mockEvents, times(1)).insert(anyString(), any(Event.class));
+
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(mockEvents).insert(anyString(), eventCaptor.capture());
+
+        Event capturedEvent = eventCaptor.getValue();
+        assertThat(leave.getDate().toString()).isEqualTo(capturedEvent.getStart().getDate().toString());
+        assertThat("Rick on leave(Second Half)").isEqualTo(capturedEvent.getSummary());
     }
 }
 
