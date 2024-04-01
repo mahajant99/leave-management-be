@@ -64,13 +64,13 @@ public class UserService {
             userRepository.save(user);
             return user;
         }
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setLastName(user.getLastName());
+        existingUser.setName(user.getName());
         userRepository.save(existingUser);
         return existingUser;
     }
 
     private User verifyIDToken(String idToken) {
+        User newUser = new User();
         try {
             GoogleIdToken idTokenObj = verifier.verify(idToken);
             if (idTokenObj == null) {
@@ -81,7 +81,12 @@ public class UserService {
             String lastName = (String) payload.get("family_name");
             String email = payload.getEmail();
     
-            return new User(firstName, lastName, email);
+            String fullName = firstName.concat(" ").concat(lastName);
+
+            newUser.setName(fullName);
+            newUser.setEmail(email);
+
+            return newUser;
         } catch (GeneralSecurityException | IOException e) {
             throw new IllegalArgumentException("Failed to verify ID token", e);
         }

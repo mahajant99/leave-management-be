@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-import static com.technogise.leavemanagement.dtos.UserDTO.convertToDto;
-
 @RestController
 @RequestMapping("/v1/oauth")
 public class UserController {
@@ -22,6 +20,6 @@ public class UserController {
     @GetMapping("/user/info")
     public ResponseEntity getUserInfo(Principal principal) {
         User user = userService.getUser(Long.valueOf(principal.getName()));
-        return ResponseEntity.ok().body(convertToDto(user));
+        return ResponseEntity.ok().body(user);
     }
 }

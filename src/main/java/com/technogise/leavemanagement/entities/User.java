@@ -24,9 +24,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-
-    private String lastName;
+    private String name;
 
     @Column(unique = true)
     private String email;
@@ -36,10 +34,4 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Leave> leaves;
-
-    public User(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
 }
