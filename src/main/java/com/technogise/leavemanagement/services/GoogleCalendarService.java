@@ -11,6 +11,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.technogise.leavemanagement.entities.Leave;
+import com.technogise.leavemanagement.enums.HalfDay;
 import com.google.api.services.calendar.Calendar;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class GoogleCalendarService {
     private static final String KOLKATA_TIME_ZONE = "Asia/Kolkata";
     private static final String ON_LEAVE = " on leave";
     private static final Double FULL_DAY = 1.0;
+    private static final String FIRST_HALF = "First Half";
+    private static final String SECOND_HALF = "Second Half";
     private Calendar service = null;
 
      GoogleCalendarService() {
@@ -45,12 +48,21 @@ public class GoogleCalendarService {
         
     }
 
+    public String generateLeaveSummary(Leave leave) {
+        String userName = leave.getUser().getName();
+        Double duration = leave.getDuration();
+
+        if (FULL_DAY.equals(duration)) {
+            return userName + ON_LEAVE;
+        } else if(leave.getHalfDay().equals(HalfDay.FIRSTHALF)) {
+            return userName + ON_LEAVE + "(" + FIRST_HALF + ")";
+        }
+        return userName + ON_LEAVE + "(" + SECOND_HALF + ")";
+    }
+
     private Event createLeaveEvent(Leave leave) {
-        String SUMMARY = leave.getDuration() == FULL_DAY ? leave.getUser().getName() + ON_LEAVE : leave.getUser().getName() + ON_LEAVE + "(" + leave.getHalfDay().toString() + ")";
-    
-        Event event = new Event()
-                .setSummary(SUMMARY);
-    
+        String SUMMARY = generateLeaveSummary(leave);
+        
         ZoneId kolkataZoneId = ZoneId.of(KOLKATA_TIME_ZONE);
         Date startDate = Date.from(leave.getDate().atStartOfDay(kolkataZoneId).toInstant());
         Date endDate = Date.from(leave.getDate().plusDays(1).atStartOfDay(kolkataZoneId).toInstant());
@@ -64,9 +76,11 @@ public class GoogleCalendarService {
     
         EventDateTime start = new EventDateTime().setDate(startDateTime);
         EventDateTime end = new EventDateTime().setDate(endDateTime);
-    
-        event.setStart(start);
-        event.setEnd(end);
+        
+        Event event = new Event()
+                .setSummary(SUMMARY)
+                .setStart(start)
+                .setEnd(end);
     
         return event;
     }
