@@ -98,9 +98,8 @@ public class LeaveService {
                 
                 if(savedLeave.getId()!=null){
                     googleCalendarService.addLeave(leave);
-                }
-
-                createdLeaves.add(savedLeave);
+                    createdLeaves.add(savedLeave);
+                }                
             }
                 currentDate = currentDate.plusDays(1);
         }
