@@ -15,7 +15,9 @@ import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.google.api.services.calendar.Calendar;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,15 +40,18 @@ public class GoogleCalendarService {
 
      GoogleCalendarService() throws CalendarConfigException {
         try {
-            GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
-                        .createScoped(CALENDAR_SCOPES);
-            this.service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
-                    .setApplicationName(APPLICATION_NAME)
-                    .build();
-        } catch (IOException | GeneralSecurityException e) {
-            
-            throw new CalendarConfigException("Failed to initialize Google Calendar service", e);
+        InputStream serviceAccountKeyStream = getClass().getResourceAsStream("/service-account-key.json");
+        if (serviceAccountKeyStream == null) {
+            throw new FileNotFoundException("Service account key file not found in classpath");
         }
+        GoogleCredential credential = GoogleCredential.fromStream(serviceAccountKeyStream)
+                    .createScoped(CALENDAR_SCOPES);
+        this.service = new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+    } catch (IOException | GeneralSecurityException e) {
+        throw new CalendarConfigException("Failed to initialize Google Calendar service", e);
+    }
         
     }
 
