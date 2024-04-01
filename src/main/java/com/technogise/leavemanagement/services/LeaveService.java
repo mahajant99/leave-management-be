@@ -106,7 +106,7 @@ public class LeaveService {
                         googleCalendarService.addLeave(leave);
                     } catch (CalendarConfigException e) {
                         
-                        logger.error("Failed to add leave to calendar", e);
+                        logger.info("Failed to add leave to calendar", e);
                     }
                     createdLeaves.add(savedLeave);
                 }                
