@@ -29,7 +29,6 @@ public class UserService {
     @Autowired
     private final JWTUtils jwtUtils;
 
-    @Autowired
     private final GoogleIdTokenVerifier verifier;
 
     public UserService(@Value("${app.googleClientId}") String clientId, UserRepository userRepository,
