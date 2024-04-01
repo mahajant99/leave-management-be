@@ -161,6 +161,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setHalfDay(null);
         newLeave.setDuration(1);
 
@@ -188,6 +189,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setHalfDay(HalfDay.FIRSTHALF);
         newLeave.setDuration(0.5);
         newLeave.setUser(user);
@@ -217,6 +219,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setHalfDay(HalfDay.SECONDHALF);
         newLeave.setDuration(0.5);
 
@@ -244,6 +247,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setDate(LocalDate.of(2022, 3, 5));
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
@@ -269,6 +273,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setDuration(1);
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
@@ -294,6 +299,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setDuration(0.5);
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
@@ -358,6 +364,7 @@ public class LeaveServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         Leave savedLeave = new Leave();
+        savedLeave.setId(1L);
         savedLeave.setUser(user);
         savedLeave.setDate(leaveDTO.getStartDate());
         savedLeave.setDescription(leaveDTO.getDescription());
@@ -393,6 +400,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave savedLeave1 = new Leave();
+        savedLeave1.setId(1L);
         savedLeave1.setUser(user);
         savedLeave1.setDate(leaveDTO.getStartDate());
         savedLeave1.setDescription(leaveDTO.getDescription());
@@ -400,6 +408,7 @@ public class LeaveServiceTest {
         savedLeave1.setDuration(1.0);
 
         Leave savedLeave2 = new Leave();
+        savedLeave2.setId(2L);
         savedLeave2.setUser(user);
         savedLeave2.setDate(leaveDTO.getEndDate());
         savedLeave2.setDescription(leaveDTO.getDescription());
