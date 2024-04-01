@@ -14,7 +14,6 @@ import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.google.api.services.calendar.Calendar;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,6 @@ import java.time.ZoneId;
 public class GoogleCalendarService {
 
     private static final String CALENDAR_ID = "abf2ff4f7bcc921456b336e2a7dc80b3daa936d455cdbcebdbc8e24473a8c175@group.calendar.google.com";
-    static final String SERVICE_ACCOUNT_KEY_FILE_PATH = "src\\main\\resources\\service-account-key.json";
     private static final List<String> CALENDAR_SCOPES = Arrays.asList("https://www.googleapis.com/auth/calendar");
     private static final String APPLICATION_NAME = "LeaveManagement";
     private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
