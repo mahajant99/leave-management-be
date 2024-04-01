@@ -12,6 +12,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.enums.HalfDay;
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.google.api.services.calendar.Calendar;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class GoogleCalendarService {
     private static final String SECOND_HALF = "Second Half";
     private Calendar service = null;
 
-     GoogleCalendarService() {
+     GoogleCalendarService() throws CalendarConfigException {
         try {
             GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(SERVICE_ACCOUNT_KEY_FILE_PATH))
                         .createScoped(CALENDAR_SCOPES);
@@ -43,7 +44,8 @@ public class GoogleCalendarService {
                     .setApplicationName(APPLICATION_NAME)
                     .build();
         } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace();
+            
+            throw new CalendarConfigException("Failed to initialize Google Calendar service", e);
         }
         
     }
@@ -85,7 +87,7 @@ public class GoogleCalendarService {
         return event;
     }
     
-    public void addLeave(Leave leave){
+    public void addLeave(Leave leave) throws CalendarConfigException{
 
         Event event = createLeaveEvent(leave);
     
@@ -93,7 +95,7 @@ public class GoogleCalendarService {
             this.service.events().insert(CALENDAR_ID, event).execute();
         } catch (IOException e) {
             
-            e.printStackTrace();
+            throw new CalendarConfigException("Failed to add leave to calendar", e);
         }    
     }
 }

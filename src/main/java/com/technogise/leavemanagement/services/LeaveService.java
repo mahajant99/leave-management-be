@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +28,8 @@ import com.technogise.leavemanagement.repositories.UserRepository;
 @Service
 @Transactional
 public class LeaveService {
+
+    private static final Logger logger = LoggerFactory.getLogger(LeaveService.class);
 
     @Autowired
     private LeaveRepository leaveRepository;
@@ -97,7 +102,12 @@ public class LeaveService {
                 Leave savedLeave = leaveRepository.save(leave);
                 
                 if(savedLeave.getId()!=null){
-                    googleCalendarService.addLeave(leave);
+                    try {
+                        googleCalendarService.addLeave(leave);
+                    } catch (CalendarConfigException e) {
+                        
+                        logger.error("Failed to add leave to calendar", e);
+                    }
                     createdLeaves.add(savedLeave);
                 }                
             }

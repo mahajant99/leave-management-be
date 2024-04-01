@@ -4,6 +4,7 @@ import com.google.api.services.calendar.model.Event;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.HalfDay;
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,7 @@ public class GoogleCalendarServiceTest {
     private Calendar.Events.Insert mockInsert;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void setUp() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, CalendarConfigException {
         googleCalendarService = new GoogleCalendarService();
         mockEvents = mock(Calendar.Events.class); 
         mockInsert = mock(Calendar.Events.Insert.class);
@@ -45,7 +46,7 @@ public class GoogleCalendarServiceTest {
 
     @Test
     @DisplayName("Given a full-day leave, when added, then it should be created as an event in Google Calendar")
-    public void testAddLeave() throws IOException {
+    public void testAddLeave() throws IOException, CalendarConfigException {
         
         User user = new User();
         user.setId(1L);
@@ -69,7 +70,7 @@ public class GoogleCalendarServiceTest {
 
     @Test
     @DisplayName("Given a half-day leave, when added, then it should be created as an event in Google Calendar")
-    public void testAddHalfLeave() throws IOException {
+    public void testAddHalfLeave() throws IOException, CalendarConfigException {
         
         User user = new User();
         user.setId(1L);

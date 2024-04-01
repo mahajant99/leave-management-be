@@ -6,6 +6,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.enums.LeaveType;
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -456,7 +457,7 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_ThrowUserDoesNotExistsException_When_AUserDoesNotExists() {
+    public void Should_ThrowUserDoesNotExistsException_When_AUserDoesNotExists() throws CalendarConfigException {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .startDate(LocalDate.of(2024, 3, 17))
                 .endDate(LocalDate.of(2024, 3, 17))
@@ -472,7 +473,7 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_ThrowLeaveAlreadyExists_When_ADuplicateLeaveIsAdded() {
+    public void Should_ThrowLeaveAlreadyExists_When_ADuplicateLeaveIsAdded() throws CalendarConfigException {
         User user = new User();
         user.setId(1L);
 
