@@ -95,10 +95,10 @@ public class LeaveService {
                 leave.setUser(currentUser);
 
                 createdLeaves.add(leaveRepository.save(leave));
+                kimaiTimesheetService.createTimesheet(leave);
             }
                 currentDate = currentDate.plusDays(1);
         }
-        kimaiTimesheetService.createTimesheet(createdLeaves);
         return createdLeaves;
     }
 

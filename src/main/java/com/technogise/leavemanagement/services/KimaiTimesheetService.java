@@ -27,7 +27,8 @@ public class KimaiTimesheetService {
 
     private final RestTemplate restTemplate;
 
-    private final double fullday = 1.0;
+    private final double fullDay = 1.0;
+    // private final double halfDay = 0.5;
 
     public KimaiTimesheetService() {
         this.restTemplate = new RestTemplate();
@@ -48,25 +49,27 @@ public class KimaiTimesheetService {
         }));
     }
 
-    public TimesheetResponse createTimesheet(List<Leave> createdLeaves) {
+    public TimesheetResponse createTimesheet(Leave createdLeaves) {
 
         TimesheetRequest request = new TimesheetRequest();
-        LocalDate startDate = createdLeaves.get(0).getDate();
-        LocalDate endDate = createdLeaves.get(createdLeaves.size()-1).getDate();
-        if (createdLeaves.get(0).getDuration() == fullday) {
-            request.setBegin(startDate.toString()+"T10:00:00");
-            request.setEnd(endDate.toString()+"T18:00:00");                        
-        } else {
-            if (createdLeaves.get(0).getHalfDay() == HalfDay.FIRSTHALF) {
-                request.setBegin(startDate.toString()+"T10:00:00");
-                request.setEnd(endDate.toString()+"T14:00:00");                                
+        LocalDate date = createdLeaves.getDate();
+        if (createdLeaves.getDuration() == fullDay) {
+            request.setBegin(date.toString()+"T10:00:00");
+            request.setEnd(date.toString()+"T18:00:00");                        
+        }
+        else{
+            if(createdLeaves.getHalfDay() == HalfDay.FIRSTHALF){
+                request.setBegin(date.toString()+"T10:00:00");
+                request.setEnd(date.toString()+"T14:00:00");
             }
-            request.setBegin(startDate.toString()+"T14:00:00");
-            request.setEnd(endDate.toString()+"T18:00:00");            
+            else {
+                request.setBegin(date.toString()+"T14:00:00");
+                request.setEnd(date.toString()+"T18:00:00");
+            }
         }
         request.setProject("1");
         request.setActivity("1");
-        request.setDescription(createdLeaves.get(0).getDescription());
+        request.setDescription(createdLeaves.getDescription());
         request.setUser("1");
         request.setTags("string");
         request.setExported("false");
