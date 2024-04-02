@@ -56,9 +56,9 @@ public class GoogleCalendarServiceTest {
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
-        // ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
-        LocalDate specificDateInKolkata = LocalDate.of(2024, 4, 2);
-        leave.setDate(specificDateInKolkata);
+        ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
+        LocalDate currentDateInKolkata = ZonedDateTime.now(kolkataZoneId).toLocalDate();
+        leave.setDate(currentDateInKolkata);
         leave.setDuration(1);
         leave.setUser(user);
         when(mockEvents.insert(anyString(), any(Event.class))).thenReturn(mockInsert);
@@ -76,10 +76,7 @@ public class GoogleCalendarServiceTest {
         String startDate = capturedEvent.getStart().getDate().toString();
         String endDate = capturedEvent.getEnd().getDate().toString();
 
-        logger.info("Start Date: {}", startDate);
-        logger.info("Leave Date: {}", leave.getDate().toString());
-
-        assertThat(startDate).isEqualTo(leave.getDate().toString());
+        assertThat(startDate).withFailMessage("Start date assertion failed. Expected: %s, Actual: %s", leave.getDate().toString(), startDate).isEqualTo(leave.getDate().toString());
         assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
     }
 
