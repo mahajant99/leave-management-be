@@ -114,7 +114,7 @@ public class LeaveService {
         return createdLeaves;
     }
 
-    public List<Leave> addLeaves(LeaveDTO leaveDTO) throws Exception {
+    public List<Leave> addLeaves(LeaveDTO leaveDTO) throws UserNotFoundException, LeaveAlreadyExistsException {
         Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
 
         if (currentUserOptional.isEmpty())
