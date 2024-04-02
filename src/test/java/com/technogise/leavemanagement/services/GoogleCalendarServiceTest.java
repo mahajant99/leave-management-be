@@ -73,6 +73,9 @@ public class GoogleCalendarServiceTest {
         String startDate = capturedEvent.getStart().getDate().toString();
         String endDate = capturedEvent.getEnd().getDate().toString();
 
+        System.out.println("Start Date: " + startDate);
+        System.out.println("Leave Date: " + leave.getDate().toString());
+
         assertThat(startDate).isEqualTo(leave.getDate().toString());
         assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
     }
