@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import org.junit.jupiter.api.Assertions;
 
 public class GoogleCalendarServiceTest {
     
@@ -67,11 +67,11 @@ public class GoogleCalendarServiceTest {
         Event capturedEvent = eventCaptor.getValue();
         assertThat("Rick on leave").isEqualTo(capturedEvent.getSummary());
 
-        String startDate = extractDate(capturedEvent.getStart().toString());
-        String endDate = extractDate(capturedEvent.getEnd().toString());
+        String startDate = capturedEvent.getStart().getDate().toString();
+        String endDate = capturedEvent.getEnd().getDate().toString();
 
-        assertThat(startDate).isEqualTo(leave.getDate().toString());
-        assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
+        Assertions.assertEquals(leave.getDate().toString(), startDate);
+        Assertions.assertEquals(leave.getDate().plusDays(1).toString(), endDate);
     }
 
     @Test
@@ -98,24 +98,11 @@ public class GoogleCalendarServiceTest {
         Event capturedEvent = eventCaptor.getValue();
         assertThat("Rick on leave(Second Half)").isEqualTo(capturedEvent.getSummary());
 
-        String startDate = extractDate(capturedEvent.getStart().toString());
-        String endDate = extractDate(capturedEvent.getEnd().toString());
+        String startDate = capturedEvent.getStart().getDate().toString();
+        String endDate = capturedEvent.getEnd().getDate().toString();
 
         assertThat(startDate).isEqualTo(leave.getDate().toString());
         assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
-    }
-
-    public String extractDate(String dateString){
-        String[] parts = dateString.split(",");
-        for (String part : parts) {
-            if (part.contains("date=")) {
-                String[] dateParts = part.split("=");
-                dateString = dateParts[1].trim();
-                dateString = dateString.substring(0, dateString.length() - 2);
-                break; 
-            }
-        }
-        return dateString;
     }
 }
 
