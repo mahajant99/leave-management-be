@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -30,6 +32,7 @@ public class GoogleCalendarServiceTest {
     private GoogleCalendarService googleCalendarService;
     private Calendar.Events mockEvents;
     private Calendar.Events.Insert mockInsert;
+    private static final Logger logger = LoggerFactory.getLogger(GoogleCalendarServiceTest.class);
 
     @BeforeEach
     public void setUp() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, CalendarConfigException {
@@ -73,8 +76,8 @@ public class GoogleCalendarServiceTest {
         String startDate = capturedEvent.getStart().getDate().toString();
         String endDate = capturedEvent.getEnd().getDate().toString();
 
-        System.out.println("Start Date: " + startDate);
-        System.out.println("Leave Date: " + leave.getDate().toString());
+        logger.info("Start Date: {}", startDate);
+        logger.info("Leave Date: {}", leave.getDate().toString());
 
         assertThat(startDate).isEqualTo(leave.getDate().toString());
         assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
