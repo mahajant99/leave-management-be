@@ -76,7 +76,12 @@ public class GoogleCalendarServiceTest {
         String startDate = capturedEvent.getStart().getDate().toString();
         String endDate = capturedEvent.getEnd().getDate().toString();
 
-        assertThat(startDate).withFailMessage("Start date assertion failed. Expected: %s, Actual: %s", leave.getDate().toString(), startDate).isEqualTo(leave.getDate().toString());
+        try {
+            assertThat(startDate).isEqualTo(leave.getDate().toString());
+        } catch (AssertionError e) {
+            logger.error("Assertion failed: Expected start date {}, but got {}", leave.getDate().toString(), startDate);
+            throw e;
+        }
         assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
     }
 
