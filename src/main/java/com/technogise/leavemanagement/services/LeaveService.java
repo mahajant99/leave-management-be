@@ -82,7 +82,6 @@ public class LeaveService {
         };
     }
 
-
     public List<Leave> createLeaves(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
         List<Leave> createdLeaves = new ArrayList<>();
@@ -104,8 +103,7 @@ public class LeaveService {
                 if(savedLeave.getId()!=null){
                     try {
                         googleCalendarService.addLeave(leave);
-                    } catch (CalendarConfigException e) {
-                        
+                    } catch (CalendarConfigException e) {                       
                         logger.info("Failed to add leave to calendar", e);
                     }
                     createdLeaves.add(savedLeave);

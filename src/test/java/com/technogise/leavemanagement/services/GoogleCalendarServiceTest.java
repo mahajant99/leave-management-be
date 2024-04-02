@@ -47,7 +47,7 @@ public class GoogleCalendarServiceTest {
     @Test
     @DisplayName("Given a full-day leave, when added, then it should be created as an event in Google Calendar")
     public void testAddLeave() throws IOException, CalendarConfigException {
-        
+
         User user = new User();
         user.setId(1L);
         user.setName("Rick");
@@ -60,12 +60,18 @@ public class GoogleCalendarServiceTest {
         googleCalendarService.addLeave(leave);
     
         verify(mockEvents, times(1)).insert(anyString(), any(Event.class));
-    
+
         ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
         verify(mockEvents).insert(anyString(), eventCaptor.capture());
 
         Event capturedEvent = eventCaptor.getValue();
         assertThat("Rick on leave").isEqualTo(capturedEvent.getSummary());
+
+        String startDate = extractDate(capturedEvent.getStart().toString());
+        String endDate = extractDate(capturedEvent.getEnd().toString());
+
+        assertThat(startDate).isEqualTo(leave.getDate().toString());
+        assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
     }
 
     @Test
@@ -91,6 +97,25 @@ public class GoogleCalendarServiceTest {
 
         Event capturedEvent = eventCaptor.getValue();
         assertThat("Rick on leave(Second Half)").isEqualTo(capturedEvent.getSummary());
+
+        String startDate = extractDate(capturedEvent.getStart().toString());
+        String endDate = extractDate(capturedEvent.getEnd().toString());
+
+        assertThat(startDate).isEqualTo(leave.getDate().toString());
+        assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
+    }
+
+    public String extractDate(String dateString){
+        String[] parts = dateString.split(",");
+        for (String part : parts) {
+            if (part.contains("date=")) {
+                String[] dateParts = part.split("=");
+                dateString = dateParts[1].trim();
+                dateString = dateString.substring(0, dateString.length() - 2);
+                break; 
+            }
+        }
+        return dateString;
     }
 }
 
