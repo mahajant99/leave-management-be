@@ -14,6 +14,7 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -52,7 +53,8 @@ public class GoogleCalendarServiceTest {
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
-        LocalDate currentDateInKolkata = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+        ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
+        LocalDate currentDateInKolkata = ZonedDateTime.now(kolkataZoneId).toLocalDate();
         leave.setDate(currentDateInKolkata);
         leave.setDuration(1);
         leave.setUser(user);
@@ -83,7 +85,8 @@ public class GoogleCalendarServiceTest {
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
-        LocalDate currentDateInKolkata = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+        ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
+        LocalDate currentDateInKolkata = ZonedDateTime.now(kolkataZoneId).toLocalDate();
         leave.setDate(currentDateInKolkata);
         leave.setDuration(0.5);
         leave.setHalfDay(HalfDay.SECONDHALF);
