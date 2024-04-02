@@ -32,6 +32,9 @@ public class LeaveService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private KimaiTimesheetService kimaiTimesheetService;
+
     private static final String FULLDAY = "FULLDAY";
     private static final String FIRSTHALF = "FIRSTHALF";
     private static final String SECONDHALF = "SECONDHALF";
@@ -95,6 +98,7 @@ public class LeaveService {
             }
                 currentDate = currentDate.plusDays(1);
         }
+        kimaiTimesheetService.createTimesheet(createdLeaves);
         return createdLeaves;
     }
 
