@@ -68,7 +68,7 @@ public class GoogleCalendarServiceTest {
         verify(mockEvents).insert(anyString(), eventCaptor.capture());
 
         Event capturedEvent = eventCaptor.getValue();
-        assertThat("Rick on leave").isEqualTo(capturedEvent.getSummary());
+        assertThat(capturedEvent.getSummary()).isEqualTo("Rick on leave");
     }
 
     @Test
@@ -95,7 +95,7 @@ public class GoogleCalendarServiceTest {
         verify(mockEvents).insert(anyString(), eventCaptor.capture());
 
         Event capturedEvent = eventCaptor.getValue();
-        assertThat("Rick on leave(Second Half)").isEqualTo(capturedEvent.getSummary());
+        assertThat(capturedEvent.getSummary()).isEqualTo("Rick on leave(Second Half)");
     }
 }
 
