@@ -59,8 +59,6 @@ public class UserService {
     public User createOrUpdateUser(User user) {
         User existingUser = userRepository.findByEmail(user.getEmail()).orElse(null);
         if (existingUser == null) {
-            String[] roles = {"ADMIN", "USER"};
-            user.setRoles(roles);
             userRepository.save(user);
             return user;
         }
