@@ -56,9 +56,9 @@ public class GoogleCalendarServiceTest {
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
-        ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
-        LocalDate currentDateInKolkata = ZonedDateTime.now(kolkataZoneId).toLocalDate();
-        leave.setDate(currentDateInKolkata);
+        // ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
+        LocalDate specificDateInKolkata = LocalDate.of(2024, 4, 2);
+        leave.setDate(specificDateInKolkata);
         leave.setDuration(1);
         leave.setUser(user);
         when(mockEvents.insert(anyString(), any(Event.class))).thenReturn(mockInsert);
