@@ -66,7 +66,7 @@ public class GoogleCalendarService {
     }
 
     private Event createLeaveEvent(Leave leave) {
-        String SUMMARY = generateLeaveSummary(leave);
+        String summary = generateLeaveSummary(leave);
         
         ZoneId kolkataZoneId = ZoneId.of(KOLKATA_TIME_ZONE);
         Date startDate = Date.from(leave.getDate().atStartOfDay(kolkataZoneId).toInstant());
@@ -82,12 +82,10 @@ public class GoogleCalendarService {
         EventDateTime start = new EventDateTime().setDate(startDateTime);
         EventDateTime end = new EventDateTime().setDate(endDateTime);
         
-        Event event = new Event()
-                .setSummary(SUMMARY)
+        return new Event()
+                .setSummary(summary)
                 .setStart(start)
                 .setEnd(end);
-    
-        return event;
     }
     
     public void addLeave(Leave leave) throws CalendarConfigException{
