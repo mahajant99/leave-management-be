@@ -13,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Assertions;
 
 public class GoogleCalendarServiceTest {
     
@@ -52,7 +52,8 @@ public class GoogleCalendarServiceTest {
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
-        leave.setDate(LocalDate.now());
+        LocalDate currentDateInKolkata = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+        leave.setDate(currentDateInKolkata);
         leave.setDuration(1);
         leave.setUser(user);
         when(mockEvents.insert(anyString(), any(Event.class))).thenReturn(mockInsert);
@@ -70,8 +71,8 @@ public class GoogleCalendarServiceTest {
         String startDate = capturedEvent.getStart().getDate().toString();
         String endDate = capturedEvent.getEnd().getDate().toString();
 
-        Assertions.assertEquals(leave.getDate().toString(), startDate);
-        Assertions.assertEquals(leave.getDate().plusDays(1).toString(), endDate);
+        assertThat(startDate).isEqualTo(leave.getDate().toString());
+        assertThat(endDate).isEqualTo(leave.getDate().plusDays(1).toString());
     }
 
     @Test
@@ -82,7 +83,8 @@ public class GoogleCalendarServiceTest {
         user.setId(1L);
         user.setName("Rick");
         Leave leave = new Leave();
-        leave.setDate(LocalDate.now());
+        LocalDate currentDateInKolkata = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+        leave.setDate(currentDateInKolkata);
         leave.setDuration(0.5);
         leave.setHalfDay(HalfDay.SECONDHALF);
         leave.setUser(user);
