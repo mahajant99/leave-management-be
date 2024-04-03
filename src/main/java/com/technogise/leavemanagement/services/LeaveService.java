@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,11 +29,16 @@ import com.technogise.leavemanagement.repositories.UserRepository;
 @Transactional
 public class LeaveService {
 
+    private static final Logger logger = LoggerFactory.getLogger(LeaveService.class);
+
     @Autowired
     private LeaveRepository leaveRepository;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GoogleCalendarService googleCalendarService;
 
     private static final String FULLDAY = "FULLDAY";
     private static final String FIRSTHALF = "FIRSTHALF";
@@ -74,7 +82,6 @@ public class LeaveService {
         };
     }
 
-
     public List<Leave> createLeaves(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
         List<Leave> createdLeaves = new ArrayList<>();
@@ -90,8 +97,17 @@ public class LeaveService {
                 leave.setDescription(leaveDTO.getDescription());
                 leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
                 leave.setUser(currentUser);
-
-                createdLeaves.add(leaveRepository.save(leave));
+                
+                Leave savedLeave = leaveRepository.save(leave);
+                
+                if(savedLeave.getId()!=null){
+                    try {
+                        googleCalendarService.addLeave(leave);
+                    } catch (CalendarConfigException e) {                       
+                        logger.info("Failed to add leave to calendar", e);
+                    }
+                    createdLeaves.add(savedLeave);
+                }                
             }
                 currentDate = currentDate.plusDays(1);
         }
