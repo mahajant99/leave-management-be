@@ -1,5 +1,6 @@
 package com.technogise.leavemanagement.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,10 +26,10 @@ import java.util.List;
 @Service
 public class KimaiTimesheetService {
 
+    @Autowired
     private final RestTemplate restTemplate;
 
     private final double fullDay = 1.0;
-    // private final double halfDay = 0.5;
 
     public KimaiTimesheetService() {
         this.restTemplate = new RestTemplate();
