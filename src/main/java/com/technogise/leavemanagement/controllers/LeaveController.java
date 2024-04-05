@@ -1,5 +1,7 @@
 package com.technogise.leavemanagement.controllers;
 
+import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
+import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -48,13 +50,13 @@ public class LeaveController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteLeave(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteLeave(@PathVariable("id") Long id) {
         leaveService.deleteLeave(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
-    public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) throws Exception {
+    public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) throws UserNotFoundException, LeaveAlreadyExistsException {
         List<Leave> leaves = leaveService.addLeaves(leaveDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(leaves);
     }
