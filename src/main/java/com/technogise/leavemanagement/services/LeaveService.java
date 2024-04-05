@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.exceptions.LeaveNotFoundException;
-import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
 import com.technogise.leavemanagement.entities.User;
@@ -114,11 +113,8 @@ public class LeaveService {
         return createdLeaves;
     }
 
-    public List<Leave> addLeaves(LeaveDTO leaveDTO) throws UserNotFoundException, LeaveAlreadyExistsException {
+    public List<Leave> addLeaves(LeaveDTO leaveDTO) throws LeaveAlreadyExistsException {
         Optional<User> currentUserOptional = userRepository.findById(leaveDTO.getUserId());
-
-        if (currentUserOptional.isEmpty())
-            throw new UserNotFoundException(leaveDTO.getUserId());
 
         User currentUser = currentUserOptional.get();
 
