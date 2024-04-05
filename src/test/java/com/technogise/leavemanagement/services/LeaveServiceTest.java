@@ -6,6 +6,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.enums.LeaveType;
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +41,9 @@ public class LeaveServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    GoogleCalendarService googleCalendarService;
 
     @InjectMocks
     private LeaveService leaveService;
@@ -158,11 +162,13 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setHalfDay(null);
         newLeave.setDuration(1);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
@@ -184,13 +190,14 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setHalfDay(HalfDay.FIRSTHALF);
         newLeave.setDuration(0.5);
         newLeave.setUser(user);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
-
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
@@ -213,12 +220,13 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setHalfDay(HalfDay.SECONDHALF);
         newLeave.setDuration(0.5);
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
-
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
@@ -240,11 +248,12 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setDate(LocalDate.of(2022, 3, 5));
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
-
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
@@ -265,10 +274,12 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setDuration(1);
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
@@ -289,10 +300,12 @@ public class LeaveServiceTest {
                 .build();
 
         Leave newLeave = new Leave();
+        newLeave.setId(1L);
         newLeave.setDuration(0.5);
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
@@ -352,6 +365,7 @@ public class LeaveServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         Leave savedLeave = new Leave();
+        savedLeave.setId(1L);
         savedLeave.setUser(user);
         savedLeave.setDate(leaveDTO.getStartDate());
         savedLeave.setDescription(leaveDTO.getDescription());
@@ -359,6 +373,7 @@ public class LeaveServiceTest {
         savedLeave.setDuration(1.0);
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave);
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
 
@@ -386,6 +401,7 @@ public class LeaveServiceTest {
                 .build();
 
         Leave savedLeave1 = new Leave();
+        savedLeave1.setId(1L);
         savedLeave1.setUser(user);
         savedLeave1.setDate(leaveDTO.getStartDate());
         savedLeave1.setDescription(leaveDTO.getDescription());
@@ -393,6 +409,7 @@ public class LeaveServiceTest {
         savedLeave1.setDuration(1.0);
 
         Leave savedLeave2 = new Leave();
+        savedLeave2.setId(2L);
         savedLeave2.setUser(user);
         savedLeave2.setDate(leaveDTO.getEndDate());
         savedLeave2.setDescription(leaveDTO.getDescription());
@@ -401,6 +418,7 @@ public class LeaveServiceTest {
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave1, savedLeave2);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
 
@@ -439,7 +457,7 @@ public class LeaveServiceTest {
     }
 
     @Test
-    public void Should_ThrowUserDoesNotExistsException_When_AUserDoesNotExists() {
+    public void Should_ThrowUserDoesNotExistsException_When_AUserDoesNotExists() throws CalendarConfigException {
         LeaveDTO leaveDTO = LeaveDTO.builder()
                 .startDate(LocalDate.of(2024, 3, 17))
                 .endDate(LocalDate.of(2024, 3, 17))
@@ -449,12 +467,13 @@ public class LeaveServiceTest {
                 .build();
 
         when(userRepository.findById(leaveDTO.getUserId())).thenReturn(Optional.empty());
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         assertThrows(UserNotFoundException.class, () -> leaveService.addLeaves(leaveDTO));
     }
 
     @Test
-    public void Should_ThrowLeaveAlreadyExists_When_ADuplicateLeaveIsAdded() {
+    public void Should_ThrowLeaveAlreadyExists_When_ADuplicateLeaveIsAdded() throws CalendarConfigException {
         User user = new User();
         user.setId(1L);
 
@@ -468,6 +487,7 @@ public class LeaveServiceTest {
 
         when(userRepository.findById(leaveDTO.getUserId())).thenReturn(Optional.of(user));
         when(leaveRepository.existsByUserIdAndDateAndDeletedFalse(user.getId(), leaveDTO.getStartDate())).thenReturn(true);
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         assertThrows(LeaveAlreadyExistsException.class, () -> leaveService.addLeaves(leaveDTO));
     }

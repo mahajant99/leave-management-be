@@ -14,6 +14,10 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,6 +25,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
@@ -30,6 +35,12 @@ public class UserService {
     private final JWTUtils jwtUtils;
 
     private final GoogleIdTokenVerifier verifier;
+
+    public Page<User> getAllUsers(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return userRepository.findAll(pageable);
+    }
 
     public UserService(@Value("${app.googleClientId}") String clientId, UserRepository userRepository,
                           JWTUtils jwtUtils) {
