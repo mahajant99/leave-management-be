@@ -35,6 +35,7 @@ public class UserService {
     private final JWTUtils jwtUtils;
 
     private final GoogleIdTokenVerifier verifier;
+    private final static String ALLOWED_DOMAIN = "@technogise.com";
 
     public Page<User> getAllUsers(int page, int size) {
         Sort sort = Sort.by(Sort.Direction.ASC, "name");
@@ -89,6 +90,10 @@ public class UserService {
             String firstName = (String) payload.get("given_name");
             String lastName = (String) payload.get("family_name");
             String email = payload.getEmail();
+
+            if (!email.matches("^.+@" + ALLOWED_DOMAIN + "$")) {
+            throw new IllegalArgumentException("Email domain not allowed");
+            }
     
             String fullName = firstName.concat(" ").concat(lastName);
 
