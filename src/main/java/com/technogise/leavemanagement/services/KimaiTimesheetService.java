@@ -1,16 +1,12 @@
 package com.technogise.leavemanagement.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.technogise.leavemanagement.dtos.TimesheetRequest;
@@ -22,17 +18,20 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-@Configuration
 @Service
 public class KimaiTimesheetService {
 
-    @Autowired
     private final RestTemplate restTemplate;
+
+    @Autowired
+    public KimaiTimesheetService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     private final double fullDay = 1.0;
 
-    public KimaiTimesheetService() {
-        this.restTemplate = new RestTemplate();
+    public TimesheetResponse createTimesheet(Leave createdLeaves) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("X-AUTH-USER", "susan_super");
@@ -48,24 +47,19 @@ public class KimaiTimesheetService {
             request.getHeaders().addAll(headers);
             return execution.execute(request, body);
         }));
-    }
-
-    public TimesheetResponse createTimesheet(Leave createdLeaves) {
 
         TimesheetRequest request = new TimesheetRequest();
         LocalDate date = createdLeaves.getDate();
         if (createdLeaves.getDuration() == fullDay) {
-            request.setBegin(date.toString()+"T10:00:00");
-            request.setEnd(date.toString()+"T18:00:00");                        
-        }
-        else{
-            if(createdLeaves.getHalfDay() == HalfDay.FIRSTHALF){
-                request.setBegin(date.toString()+"T10:00:00");
-                request.setEnd(date.toString()+"T14:00:00");
-            }
-            else {
-                request.setBegin(date.toString()+"T14:00:00");
-                request.setEnd(date.toString()+"T18:00:00");
+            request.setBegin(date.toString() + "T10:00:00");
+            request.setEnd(date.toString() + "T18:00:00");
+        } else {
+            if (createdLeaves.getHalfDay() == HalfDay.FIRSTHALF) {
+                request.setBegin(date.toString() + "T10:00:00");
+                request.setEnd(date.toString() + "T14:00:00");
+            } else {
+                request.setBegin(date.toString() + "T14:00:00");
+                request.setEnd(date.toString() + "T18:00:00");
             }
         }
         request.setProject("1");
@@ -79,15 +73,9 @@ public class KimaiTimesheetService {
         try {
             ResponseEntity<TimesheetResponse> response = restTemplate.postForEntity("https://demo.kimai.org/api/timesheets", request, TimesheetResponse.class);
             return response.getBody();
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            System.err.println("HTTP error occurred: " + e.getMessage());
-            return null; 
-        } catch (ResourceAccessException e) {
-            System.err.println("Resource access error occurred: " + e.getMessage());
-            return null; 
         } catch (Exception e) {
             System.err.println("An error occurred: " + e.getMessage());
-            return null; 
+            return null;
         }
     }
 }
