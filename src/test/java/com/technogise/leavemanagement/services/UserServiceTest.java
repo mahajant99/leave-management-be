@@ -3,8 +3,6 @@ package com.technogise.leavemanagement.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,8 +22,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.technogise.leavemanagement.configs.JWTUtils;
-import com.technogise.leavemanagement.dtos.IdTokenRequestDto;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
@@ -40,6 +38,10 @@ public class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+
+    @Mock
+    private GoogleIdTokenVerifier googleIdTokenVerifier;
+
 
     @Test
     @DisplayName("Given pagination/sorting parameters and users exist, when fetching all users, then the expected page of users is returned")
