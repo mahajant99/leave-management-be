@@ -31,7 +31,7 @@ public class KimaiTimesheetService {
         this.restTemplate = restTemplate;
     }
 
-    private final double fullDay = 1.0;
+    private static final double FULLDAY = 1.0;
 
     public TimesheetResponse createTimesheet(Leave createdLeaves) {
 
@@ -52,7 +52,7 @@ public class KimaiTimesheetService {
 
         TimesheetRequest request = new TimesheetRequest();
         LocalDate date = createdLeaves.getDate();
-        if (createdLeaves.getDuration() == fullDay) {
+        if (createdLeaves.getDuration() == FULLDAY) {
             request.setBegin(date.toString() + "T10:00:00");
             request.setEnd(date.toString() + "T18:00:00");
         } else {
@@ -76,7 +76,7 @@ public class KimaiTimesheetService {
             ResponseEntity<TimesheetResponse> response = restTemplate.postForEntity("https://demo.kimai.org/api/timesheets", request, TimesheetResponse.class);
             return response.getBody();
         } catch (Exception e) {
-            logger.info("An error occurred: " + e.getMessage());
+            logger.info("An error occurred: {}" ,e.getMessage());
             return null;
         }
     }   
