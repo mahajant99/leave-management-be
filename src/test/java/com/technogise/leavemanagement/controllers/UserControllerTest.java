@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,7 @@ public class UserControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
-        mockMvc.perform(get("/users")
+        mockMvc.perform(get("/v1/oauth/users")
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())

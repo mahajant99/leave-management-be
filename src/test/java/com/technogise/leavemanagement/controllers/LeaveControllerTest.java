@@ -8,6 +8,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.enums.LeaveType;
+import com.technogise.leavemanagement.handlers.ValidationHandler;
+
 import org.junit.jupiter.api.DisplayName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,8 +29,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
+
+import io.jsonwebtoken.lang.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -131,7 +138,7 @@ public class LeaveControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
-        mockMvc.perform(delete("/leaves/{leavesId}", id))
+        mockMvc.perform(delete("/v1/oauth/leaves/{leavesId}", id))
                 .andExpect(status().isOk());
     }
 
@@ -170,7 +177,7 @@ public class LeaveControllerTest {
                 .startDate(LocalDate.of(2024, 04, 01))
                 .endDate(LocalDate.of(2024, 04, 02))
                 .description("Vacation")
-                .userId(1L)
+                .userId(1l)
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
@@ -195,10 +202,12 @@ public class LeaveControllerTest {
         List<Leave> expectedLeaves = new ArrayList<>();
         expectedLeaves.add(leave1);
         expectedLeaves.add(leave2);
-
-        when(leaveService.addLeaves(leaveDTO)).thenReturn(expectedLeaves);
+        
         Principal principal = Mockito.mock(Principal.class);
-        when(principal.getName()).thenReturn(user.getId().toString());
+        when(principal.getName()).thenReturn(leaveDTO.getUserId().toString());
+        when(leaveService.addLeaves(leaveDTO)).thenReturn(expectedLeaves);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
         mockMvc.perform(post("/v1/oauth/leaves")
                         .principal(principal)
@@ -217,10 +226,11 @@ public class LeaveControllerTest {
 
     @Test
     public void Should_ReturnStartDateRequired_When_StartDateIsNotGiven() throws Exception {
+        Long userId = 1L;
         LeaveDTO leaveDTO = LeaveDTO.builder()
+                .userId(userId)
                 .endDate(LocalDate.of(2024, 3, 17))
                 .description("Vacation")
-                .userId(1L)
                 .leaveType(String.valueOf(LeaveType.FULLDAY))
                 .build();
 
@@ -228,7 +238,15 @@ public class LeaveControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
-        mockMvc.perform(post("/leaves")
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(userId.toString());
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController)
+                        .setControllerAdvice(new ValidationHandler()) 
+                        .build();
+
+        mockMvc.perform(post("/v1/oauth/leaves")
+                        .principal(principal)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(jsonPath("$.startDate").value("Start Date is required"));
@@ -247,7 +265,15 @@ public class LeaveControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
-        mockMvc.perform(post("/leaves")
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(leaveDTO.getUserId().toString());
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController)
+                        .setControllerAdvice(new ValidationHandler()) 
+                        .build();
+
+        mockMvc.perform(post("/v1/oauth/leaves")
+                        .principal(principal)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(jsonPath("$.endDate").value("End Date is required"));
@@ -266,7 +292,15 @@ public class LeaveControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
-        mockMvc.perform(post("/leaves")
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(leaveDTO.getUserId().toString());
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController)
+                        .setControllerAdvice(new ValidationHandler()) 
+                        .build();
+
+        mockMvc.perform(post("/v1/oauth/leaves")
+                        .principal(principal)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(jsonPath("$.leaveType").value("Leave Type is required"));
@@ -285,7 +319,15 @@ public class LeaveControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
-        mockMvc.perform(post("/leaves")
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(leaveDTO.getUserId().toString());
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController)
+                        .setControllerAdvice(new ValidationHandler()) 
+                        .build();
+
+        mockMvc.perform(post("/v1/oauth/leaves")
+                        .principal(principal)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(jsonPath("$.description").value("Description is required"));
