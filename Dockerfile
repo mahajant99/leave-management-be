@@ -15,4 +15,4 @@ FROM openjdk:17-oracle
 COPY --from=build /home/gradle/src/build/libs/*.jar /usr/local/lib/app.jar
 
 # Run the web service on container startup.
-CMD ["java", "-jar", "/usr/local/lib/app.jar"]
+CMD ["java", "-Duser.timezone=Asia/Kolkata", "-jar", "/usr/local/lib/app.jar"]

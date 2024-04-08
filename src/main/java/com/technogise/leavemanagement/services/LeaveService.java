@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.technogise.leavemanagement.exceptions.CalendarConfigException;
 import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,11 +29,16 @@ import com.technogise.leavemanagement.repositories.UserRepository;
 @Transactional
 public class LeaveService {
 
+    private static final Logger logger = LoggerFactory.getLogger(LeaveService.class);
+
     @Autowired
     private LeaveRepository leaveRepository;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GoogleCalendarService googleCalendarService;
 
     @Autowired
     private KimaiTimesheetService kimaiTimesheetService;
@@ -77,7 +85,6 @@ public class LeaveService {
         };
     }
 
-
     public List<Leave> createLeaves(LeaveDTO leaveDTO, User currentUser) {
         LocalDate currentDate = leaveDTO.getStartDate();
         List<Leave> createdLeaves = new ArrayList<>();
@@ -94,8 +101,18 @@ public class LeaveService {
                 leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
                 leave.setUser(currentUser);
 
-                createdLeaves.add(leaveRepository.save(leave));
-                kimaiTimesheetService.createTimesheet(leave);
+                Leave savedLeave = leaveRepository.save(leave);
+                
+                if(savedLeave.getId()!=null){
+                    try {
+                        googleCalendarService.addLeave(leave);
+                        createdLeaves.add(leaveRepository.save(leave));
+                        kimaiTimesheetService.createTimesheet(leave);
+                    } catch (CalendarConfigException e) {                       
+                        logger.info("Failed to add leave", e);
+                    }
+                    createdLeaves.add(savedLeave);
+                }                
             }
                 currentDate = currentDate.plusDays(1);
         }
