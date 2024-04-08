@@ -83,6 +83,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Given an existing user, when updating the user with new details, then the updated user is returned with the existing ID and new name")
     void testCreateOrUpdateUser_ExistingUser() {
         User existingUser = new User();
         existingUser.setId(1L);
