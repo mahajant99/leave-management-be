@@ -15,6 +15,7 @@ import com.technogise.leavemanagement.dtos.LeaveDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
@@ -32,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
+import java.security.Principal;
 import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,24 +55,28 @@ public class LeaveControllerTest {
     @Test
     @DisplayName("Given user ID, when retrieving leaves with pagination, then it should succeed")
     public void testRetrieveLeavesSuccess() throws Exception {
-        Long userId = 1L;
-        int page = 0;
-        int size = 6;
+    Long userId = 1L;
+    int page = 0;
+    int size = 6;
 
-        Leave leave = new Leave();
-        leave.setId(2L);
-        Page<Leave> mockPage = new PageImpl<>(List.of(leave), PageRequest.of(page, size), 1);
+    Leave leave = new Leave();
+    leave.setId(2L);
+    Page<Leave> mockPage = new PageImpl<>(List.of(leave), PageRequest.of(page, size), 1);
 
-        when(leaveService.getLeavesByUserId(anyLong(), anyInt(), anyInt())).thenReturn(mockPage);
+    when(leaveService.getLeavesByUserId(anyLong(), anyInt(), anyInt())).thenReturn(mockPage);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+    Principal principal = Mockito.mock(Principal.class);
+    when(principal.getName()).thenReturn(userId.toString());
 
-        mockMvc.perform(get("/leaves/users/{userId}", userId)
-                .param("page", String.valueOf(page))
-                .param("size", String.valueOf(size)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)))
-                .andExpect(jsonPath("$.content[0].id", notNullValue()));
+    mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+    mockMvc.perform(get("/v1/oauth/leaves/users")
+            .principal(principal)
+            .param("page", String.valueOf(page))
+            .param("size", String.valueOf(size)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content", hasSize(1)))
+            .andExpect(jsonPath("$.content[0].id", notNullValue()));
     }
 
     @Test
@@ -86,7 +93,7 @@ public class LeaveControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
-        mockMvc.perform(get("/leaves")
+        mockMvc.perform(get("/v1/oauth/leaves")
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -103,9 +110,13 @@ public class LeaveControllerTest {
 
         when(leaveService.getLeavesByUserId(anyLong(), anyInt(), anyInt())).thenReturn(mockPage);
 
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(userId.toString());
+
         mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
-        mockMvc.perform(get("/leaves/users/{userId}", userId)
+        mockMvc.perform(get("/v1/oauth/leaves/users")
+                .principal(principal)
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isNoContent());
@@ -127,21 +138,27 @@ public class LeaveControllerTest {
     @Test
     public void Should_ReturnCreatedResponse_When_LeaveDTOIsValid() throws Exception {
         LeaveDTO leaveDTO = LeaveDTO.builder()
-                .startDate(LocalDate.of(2024, 03, 1))
-                .endDate(LocalDate.of(2024, 03, 1))
-                .description("Vacation")
-                .userId(1L)
-                .leaveType(String.valueOf(LeaveType.FULLDAY))
-                .build();
+            .startDate(LocalDate.of(2024, 03, 1))
+            .endDate(LocalDate.of(2024, 03, 1))
+            .description("Vacation")
+            .userId(1L)
+            .leaveType(String.valueOf(LeaveType.FULLDAY))
+            .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         String requestBody = objectMapper.writeValueAsString(leaveDTO);
 
-        mockMvc.perform(post("/leaves")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isCreated());
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(leaveDTO.getUserId().toString());
+
+        mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
+
+        mockMvc.perform(post("/v1/oauth/leaves")
+                    .principal(principal)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().isCreated());
     }
 
     @Test
@@ -180,8 +197,11 @@ public class LeaveControllerTest {
         expectedLeaves.add(leave2);
 
         when(leaveService.addLeaves(leaveDTO)).thenReturn(expectedLeaves);
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(user.getId().toString());
 
-        mockMvc.perform(post("/leaves")
+        mockMvc.perform(post("/v1/oauth/leaves")
+                        .principal(principal)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
