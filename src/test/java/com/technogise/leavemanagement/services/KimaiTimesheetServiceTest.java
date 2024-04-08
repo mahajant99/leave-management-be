@@ -54,7 +54,7 @@ public class KimaiTimesheetServiceTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         Leave leave = new Leave();
-        leave.setDate(LocalDate.parse("2024-08-07"));
+        leave.setDate(LocalDate.parse("2024-08-08"));
         leave.setDuration(1.0);
         leave.setHalfDay(null);
         leave.setDescription("Full day leave");
@@ -85,7 +85,7 @@ public class KimaiTimesheetServiceTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         Leave leave = new Leave();
-        leave.setDate(LocalDate.parse("2024-08-07"));
+        leave.setDate(LocalDate.parse("2024-08-08"));
         leave.setDuration(0.5);
         leave.setHalfDay(HalfDay.FIRSTHALF);
         leave.setDescription("First half leave");
@@ -116,7 +116,7 @@ public class KimaiTimesheetServiceTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         Leave leave = new Leave();
-        leave.setDate(LocalDate.parse("2024-08-07"));
+        leave.setDate(LocalDate.parse("2024-08-08"));
         leave.setDuration(0.5);
         leave.setHalfDay(HalfDay.SECONDHALF);
         leave.setDescription("Second half leave");

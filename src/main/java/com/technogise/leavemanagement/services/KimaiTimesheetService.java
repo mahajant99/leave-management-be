@@ -1,6 +1,5 @@
 package com.technogise.leavemanagement.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ public class KimaiTimesheetService {
 
     private final RestTemplate restTemplate;
 
-    @Autowired
     public KimaiTimesheetService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
