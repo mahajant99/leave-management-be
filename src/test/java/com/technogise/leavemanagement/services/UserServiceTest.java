@@ -1,10 +1,17 @@
 package com.technogise.leavemanagement.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +24,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.technogise.leavemanagement.configs.JWTUtils;
+import com.technogise.leavemanagement.dtos.IdTokenRequestDto;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.repositories.UserRepository;
 
@@ -25,6 +34,9 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private JWTUtils jwtUtils;
 
     @InjectMocks
     private UserService userService;
@@ -50,5 +62,23 @@ public class UserServiceTest {
         Page<User> resultPage = userService.getAllUsers(page, size);
 
         assertEquals(expectedPage, resultPage);
-    }    
+    }  
+    
+    @Test
+    @DisplayName("Given a new user, when creating or updating the user, then the user is successfully created")
+    void testCreateOrUpdateUser_NewUser() {
+        User newUser = new User();
+        newUser.setEmail("Rick@technogise.com");
+        newUser.setName("Rick");
+
+        when(userRepository.findByEmail(newUser.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(newUser);
+
+        User result = userService.createOrUpdateUser(newUser);
+
+        assertNotNull(result);
+        assertEquals(newUser.getEmail(), result.getEmail());
+        verify(userRepository, times(1)).findByEmail(newUser.getEmail());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
 }
