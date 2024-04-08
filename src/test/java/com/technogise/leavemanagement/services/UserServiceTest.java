@@ -81,4 +81,27 @@ public class UserServiceTest {
         verify(userRepository, times(1)).findByEmail(newUser.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
     }
+
+    @Test
+    void testCreateOrUpdateUser_ExistingUser() {
+        User existingUser = new User();
+        existingUser.setId(1L);
+        existingUser.setEmail("existing@example.com");
+        existingUser.setName("Existing User");
+
+        User updateUser = new User();
+        updateUser.setEmail(existingUser.getEmail());
+        updateUser.setName("Updated User");
+
+        when(userRepository.findByEmail(existingUser.getEmail())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
+
+        User result = userService.createOrUpdateUser(updateUser);
+
+       assertNotNull(result);
+       assertEquals(existingUser.getId(), result.getId());
+       assertEquals(updateUser.getName(), result.getName());
+       verify(userRepository, times(1)).findByEmail(existingUser.getEmail());
+       verify(userRepository, times(1)).save(any(User.class));
+    }
 }
