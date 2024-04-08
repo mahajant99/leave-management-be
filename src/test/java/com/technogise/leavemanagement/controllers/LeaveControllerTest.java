@@ -202,7 +202,7 @@ public class LeaveControllerTest {
         List<Leave> expectedLeaves = new ArrayList<>();
         expectedLeaves.add(leave1);
         expectedLeaves.add(leave2);
-        
+
         Principal principal = Mockito.mock(Principal.class);
         when(principal.getName()).thenReturn(leaveDTO.getUserId().toString());
         when(leaveService.addLeaves(leaveDTO)).thenReturn(expectedLeaves);
@@ -214,11 +214,15 @@ public class LeaveControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$[0].date").value(LocalDate.of(2024, 04, 01).toString()))
+                .andExpect(jsonPath("$[0].date[0]").value(2024))
+                .andExpect(jsonPath("$[0].date[1]").value(4))
+                .andExpect(jsonPath("$[0].date[2]").value(1))
                 .andExpect(jsonPath("$[0].duration").value(1.0))
                 .andExpect(jsonPath("$[0].description").value("Vacation"))
                 .andExpect(jsonPath("$[0].halfDay", nullValue()))
-                .andExpect(jsonPath("$[1].date").value(LocalDate.of(2024, 04, 02).toString()))
+                .andExpect(jsonPath("$[1].date[0]").value(2024))
+                .andExpect(jsonPath("$[1].date[1]").value(4))
+                .andExpect(jsonPath("$[1].date[2]").value(2))
                 .andExpect(jsonPath("$[1].duration").value(1.0))
                 .andExpect(jsonPath("$[1].halfDay", nullValue()))
                 .andExpect(jsonPath("$[1].description").value("Vacation"));
