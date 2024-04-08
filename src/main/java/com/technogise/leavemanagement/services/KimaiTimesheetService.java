@@ -1,5 +1,7 @@
 package com.technogise.leavemanagement.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ public class KimaiTimesheetService {
 
     private final RestTemplate restTemplate;
 
+    private static final Logger logger = LoggerFactory.getLogger(KimaiTimesheetService.class);
+
+
     public KimaiTimesheetService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -31,9 +36,8 @@ public class KimaiTimesheetService {
     public TimesheetResponse createTimesheet(Leave createdLeaves) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-AUTH-USER", "susan_super");
-        headers.set("X-AUTH-TOKEN", "api_kitten");
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", "Bearer d3d8666c8646833adc64e065a");
 
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
@@ -72,8 +76,8 @@ public class KimaiTimesheetService {
             ResponseEntity<TimesheetResponse> response = restTemplate.postForEntity("https://demo.kimai.org/api/timesheets", request, TimesheetResponse.class);
             return response.getBody();
         } catch (Exception e) {
-            System.err.println("An error occurred: " + e.getMessage());
+            logger.info("An error occurred: " + e.getMessage());
             return null;
         }
-    }
+    }   
 }
