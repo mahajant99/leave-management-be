@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.time.ZoneId;
 
+@SuppressWarnings("deprecation")
 @Service
 public class GoogleCalendarService {
 
@@ -36,7 +37,7 @@ public class GoogleCalendarService {
     private static final String SECOND_HALF = "Second Half";
     private Calendar service = null;
 
-     GoogleCalendarService() throws CalendarConfigException {
+    GoogleCalendarService() throws CalendarConfigException {
         try {
         InputStream serviceAccountKeyStream = getClass().getResourceAsStream("/service-account-key.json");
         if (serviceAccountKeyStream == null) {

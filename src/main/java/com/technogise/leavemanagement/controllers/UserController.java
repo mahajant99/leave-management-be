@@ -33,7 +33,7 @@ public class UserController {
     }    
 
     @GetMapping("/user/info")
-    public ResponseEntity getUserInfo(Principal principal) {
+    public ResponseEntity<User> getUserInfo(Principal principal) {
         User user = userService.getUser(Long.valueOf(principal.getName()));
         return ResponseEntity.ok().body(user);
     }  

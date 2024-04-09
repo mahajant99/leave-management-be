@@ -22,12 +22,13 @@ public class LoginController {
     @Autowired
     UserService userService;
 
+    @SuppressWarnings("rawtypes")
     @PostMapping("/login")
     public ResponseEntity LoginWithGoogleOauth2(@RequestBody IdTokenRequestDto requestBody, HttpServletResponse response) {
         String authToken = userService.loginOAuthGoogle(requestBody);
         final ResponseCookie cookie = ResponseCookie.from("AUTH-TOKEN", authToken)
                 .httpOnly(true)
-                .maxAge(7 * 24 * 3600)
+                .maxAge((int) (7L * 24 * 3600))
                 .path("/")
                 .secure(false)
                 .build();
