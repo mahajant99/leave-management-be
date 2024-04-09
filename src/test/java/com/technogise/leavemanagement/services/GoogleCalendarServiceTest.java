@@ -72,8 +72,35 @@ public class GoogleCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("Given a half-day leave, when added, then it should be created as an event in Google Calendar")
-    public void testAddHalfLeave() throws IOException, CalendarConfigException {
+    @DisplayName("Given a half-day first-half leave, when added, then it should be created as an event in Google Calendar")
+    public void testAddFirstHalfLeave() throws IOException, CalendarConfigException {
+        
+        User user = new User();
+        user.setId(1L);
+        user.setName("Rick");
+        Leave leave = new Leave();
+        ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
+        LocalDate currentDateInKolkata = ZonedDateTime.now(kolkataZoneId).toLocalDate();
+        leave.setDate(currentDateInKolkata);
+        leave.setDuration(0.5);
+        leave.setHalfDay(HalfDay.FIRSTHALF);
+        leave.setUser(user);
+        when(mockEvents.insert(anyString(), any(Event.class))).thenReturn(mockInsert);
+
+        googleCalendarService.addLeave(leave);
+    
+        verify(mockEvents, times(1)).insert(anyString(), any(Event.class));
+
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(mockEvents).insert(anyString(), eventCaptor.capture());
+
+        Event capturedEvent = eventCaptor.getValue();
+        assertThat(capturedEvent.getSummary()).isEqualTo("Rick on leave(First Half)");
+    }
+
+    @Test
+    @DisplayName("Given a half-day second-half leave, when added, then it should be created as an event in Google Calendar")
+    public void testAddSecondHalfLeave() throws IOException, CalendarConfigException {
         
         User user = new User();
         user.setId(1L);
