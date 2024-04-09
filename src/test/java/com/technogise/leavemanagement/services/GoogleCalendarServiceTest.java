@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GoogleCalendarServiceTest {
     
@@ -123,6 +124,25 @@ public class GoogleCalendarServiceTest {
 
         Event capturedEvent = eventCaptor.getValue();
         assertThat(capturedEvent.getSummary()).isEqualTo("Rick on leave(Second Half)");
+    }
+
+    @Test
+    @DisplayName("Given an IOException when adding a leave, then it should throw CalendarConfigException")
+    public void testIOException() throws IOException, CalendarConfigException {
+    
+        User user = new User();
+        user.setId(1L);
+        user.setName("Rick");
+        Leave leave = new Leave();
+        ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
+        LocalDate currentDateInKolkata = ZonedDateTime.now(kolkataZoneId).toLocalDate();
+        leave.setDate(currentDateInKolkata);
+        leave.setDuration(1);
+        leave.setUser(user);
+
+        when(mockEvents.insert(anyString(), any(Event.class))).thenThrow(IOException.class);
+
+        assertThrows(CalendarConfigException.class, () -> googleCalendarService.addLeave(leave));
     }
 }
 
