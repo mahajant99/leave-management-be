@@ -3,6 +3,7 @@ package com.technogise.leavemanagement.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.technogise.leavemanagement.enums.LeaveType;
@@ -28,6 +29,7 @@ import java.time.LocalDate;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.entities.User;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
+import com.technogise.leavemanagement.dtos.TimesheetResponse;
 import com.technogise.leavemanagement.enums.HalfDay;
 import com.technogise.leavemanagement.exceptions.LeaveNotFoundException;
 import com.technogise.leavemanagement.repositories.LeaveRepository;
@@ -38,6 +40,9 @@ public class LeaveServiceTest {
 
     @Mock
     private LeaveRepository leaveRepository;
+
+    @Mock
+    KimaiTimesheetService kimaiTimesheetService;
 
     @Mock
     private UserRepository userRepository;
@@ -168,6 +173,8 @@ public class LeaveServiceTest {
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
@@ -175,6 +182,8 @@ public class LeaveServiceTest {
 
         assertNull(createdLeave.getHalfDay());
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -197,6 +206,8 @@ public class LeaveServiceTest {
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
@@ -205,6 +216,8 @@ public class LeaveServiceTest {
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
         assertEquals(newLeave.getUser().getId(), createdLeave.getUser().getId());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -226,6 +239,8 @@ public class LeaveServiceTest {
 
         lenient().when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
@@ -233,6 +248,8 @@ public class LeaveServiceTest {
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
         assertEquals(newLeave.getHalfDay(), createdLeave.getHalfDay());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -253,12 +270,16 @@ public class LeaveServiceTest {
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(leaveDTO.getStartDate(), createdLeave.getDate());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -279,12 +300,16 @@ public class LeaveServiceTest {
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
         Leave createdLeave = createdLeaves.get(0);
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -305,12 +330,16 @@ public class LeaveServiceTest {
 
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(leaveRepository.save(any(Leave.class))).thenReturn(newLeave);
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
-        Leave createdLeave = createdLeaves.get(0);
+        Leave createdLeave = createdLeaves.get(0);  
 
         assertEquals(newLeave.getDuration(), createdLeave.getDuration());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -373,6 +402,8 @@ public class LeaveServiceTest {
         savedLeave.setDuration(1.0);
 
         when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave);
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
 
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
@@ -385,6 +416,8 @@ public class LeaveServiceTest {
         assertEquals(leaveDTO.getDescription(), createdLeave.getDescription());
         assertEquals(1, createdLeave.getDuration());
         assertEquals(user, createdLeave.getUser());
+
+        verify(kimaiTimesheetService).createTimesheet(any(Leave.class));
     }
 
     @Test
@@ -416,10 +449,12 @@ public class LeaveServiceTest {
         savedLeave2.setHalfDay(null);
         savedLeave2.setDuration(1.0);
 
-        when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave1, savedLeave2);
+        when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave2).thenReturn(savedLeave1);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
-
+        TimesheetResponse mockResponse = new TimesheetResponse(); 
+        when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
+        
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
 
         Leave createdLeave1 = createdLeaves.get(0);
@@ -436,7 +471,7 @@ public class LeaveServiceTest {
         assertEquals(leaveDTO.getDescription(), createdLeave2.getDescription());
         assertNull(createdLeave2.getHalfDay());
         assertEquals(user, createdLeave2.getUser());
-    }
+    }    
 
     @Test
     public void Should_ReturnEmptyList_When_StartDateIsAfterEndDate() throws Exception {

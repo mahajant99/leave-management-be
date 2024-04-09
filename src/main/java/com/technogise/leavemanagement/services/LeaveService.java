@@ -40,6 +40,9 @@ public class LeaveService {
     @Autowired
     private GoogleCalendarService googleCalendarService;
 
+    @Autowired
+    private KimaiTimesheetService kimaiTimesheetService;
+
     private static final String FULLDAY = "FULLDAY";
     private static final String FIRSTHALF = "FIRSTHALF";
     private static final String SECONDHALF = "SECONDHALF";
@@ -97,14 +100,16 @@ public class LeaveService {
                 leave.setDescription(leaveDTO.getDescription());
                 leave.setHalfDay(mapLeaveType(leaveDTO.getLeaveType()));
                 leave.setUser(currentUser);
-                
+
                 Leave savedLeave = leaveRepository.save(leave);
                 
                 if(savedLeave.getId()!=null){
                     try {
                         googleCalendarService.addLeave(leave);
+                        createdLeaves.add(leaveRepository.save(leave));
+                        kimaiTimesheetService.createTimesheet(leave);
                     } catch (CalendarConfigException e) {                       
-                        logger.info("Failed to add leave to calendar", e);
+                        logger.info("Failed to add leave", e);
                     }
                     createdLeaves.add(savedLeave);
                 }                
