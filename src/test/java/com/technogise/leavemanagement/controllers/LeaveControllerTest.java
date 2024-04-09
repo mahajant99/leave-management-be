@@ -29,12 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
-
-import io.jsonwebtoken.lang.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -89,6 +86,7 @@ public class LeaveControllerTest {
     @Test
     @DisplayName("Given leaves exist, when retrieving leaves with pagination, then it should succeed")
     public void testRetrieveAllLeavesSuccess() throws Exception {
+        Long userId = 1L;
         int page = 0;
         int size = 6;
 
@@ -96,15 +94,17 @@ public class LeaveControllerTest {
         leave.setId(2L);
         Page<Leave> mockPage = new PageImpl<>(List.of(leave), PageRequest.of(page, size), 1);
 
-        when(leaveService.getAllLeaves(anyInt(), anyInt())).thenReturn(mockPage);
+        when(leaveService.getLeavesByUserId(anyLong(), anyInt(), anyInt())).thenReturn(mockPage);
 
         mockMvc = MockMvcBuilders.standaloneSetup(leaveController).build();
 
-        mockMvc.perform(get("/v1/oauth/leaves")
+        mockMvc.perform(get("/v1/oauth/leaves/{userId}", userId)
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].id", notNullValue()));
+
     }
 
     @Test
