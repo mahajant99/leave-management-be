@@ -35,7 +35,7 @@ public class UserService {
     private final JWTUtils jwtUtils;
 
     private final GoogleIdTokenVerifier verifier;
-    private final String ALLOWED_DOMAIN = "technogise.com";
+    private static final String ALLOWEDDOMAIN = "technogise.com";
 
     public Page<User> getAllUsers(int page, int size) {
         Sort sort = Sort.by(Sort.Direction.ASC, "name");
@@ -64,7 +64,8 @@ public class UserService {
             throw new IllegalArgumentException("Invalid ID token");
         }
         user = createOrUpdateUser(user);
-        return jwtUtils.createToken(user, false);
+        boolean isRememberMe = false;
+        return jwtUtils.createToken(user, isRememberMe);
     }
 
     @Transactional
@@ -91,7 +92,7 @@ public class UserService {
             String lastName = (String) payload.get("family_name");
             String email = payload.getEmail();
 
-            if (!email.matches("^.+@" + ALLOWED_DOMAIN + "$")) {
+            if (!email.matches("^.+@" + ALLOWEDDOMAIN + "$")) {
                throw new IllegalArgumentException("Email domain not allowed");
             }
     

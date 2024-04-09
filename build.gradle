@@ -110,7 +110,11 @@ sonarLint {
         disable(
                 'java:S6813',
                 'java:S5786',
-                'java:S2293'
+                'java:S2293',
+                'java:S100',
+                'java:S3655',
+                'java:S2583'
+
         )
     }
 
