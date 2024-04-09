@@ -37,7 +37,7 @@ public class KimaiTimesheetService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.set("Authorization", "Bearer d3d8666c8646833adc64e065a");
+        headers.set("Authorization", "Bearer 286041a8d6bd336d87dae491f");
 
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
