@@ -50,4 +50,17 @@ public class GlobalExceptionHandlerTest {
         assertEquals(statusCode, responseEntity.getStatusCode().value());
         assertEquals(errorResponse, responseEntity.getBody());
     }
+
+    @Test
+    @DisplayName("Given an IllegalArgumentException with 'Email domain not allowed' message, when handled, then should return BAD_REQUEST status.")
+    public void testHandleIllegalArgumentException() {
+        String exceptionMessage = "Email domain not allowed";
+        int statusCode = HttpStatus.BAD_REQUEST.value();
+        ErrorResponse expectedErrorResponse = new ErrorResponse(statusCode, exceptionMessage);
+
+        ResponseEntity<ErrorResponse> responseEntity = globalExceptionHandler
+                .handleIllegalArgumentException(new IllegalArgumentException(exceptionMessage));
+
+        assertEquals(expectedErrorResponse.getStatusCode(), responseEntity.getStatusCode().value());
+    }
 }
