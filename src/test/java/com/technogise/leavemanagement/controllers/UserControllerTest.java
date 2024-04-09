@@ -65,6 +65,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Given a user exists, when retrieving user info by ID, then it should return the user's details")
     public void testGetUserInfo() throws Exception {
         User user = new User();
         user.setId(1L);
