@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Builder
 public class LeaveDTO {
 
-    @NotNull(message = "ID is required")
     private Long userId;
 
     @NotNull(message = "Start Date is required")

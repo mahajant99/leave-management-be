@@ -1,7 +1,6 @@
 package com.technogise.leavemanagement.controllers;
 
 import com.technogise.leavemanagement.exceptions.LeaveAlreadyExistsException;
-import com.technogise.leavemanagement.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.technogise.leavemanagement.entities.Leave;
 import com.technogise.leavemanagement.services.LeaveService;
 import com.technogise.leavemanagement.dtos.LeaveDTO;
+
+import java.security.Principal;
 import java.util.List;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/leaves")
+@RequestMapping("/v1/oauth/leaves")
 public class LeaveController {
 
     @Autowired
@@ -31,12 +32,12 @@ public class LeaveController {
     private static final String DEFAULT_SIZE = "6";
 
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<Leave>> getLeaves(@PathVariable("userId") Long userId,
+    @GetMapping("/users")
+    public ResponseEntity<Page<Leave>> getLeaves(Principal principal,
     @RequestParam(defaultValue = DEFAULT_PAGE) int page,
     @RequestParam(defaultValue = DEFAULT_SIZE) int size) {
 
-        Page<Leave> leavesPage = leaveService.getLeavesByUserId(userId, page, size);
+        Page<Leave> leavesPage = leaveService.getLeavesByUserId(Long.valueOf(principal.getName()), page, size);
         return leavesPage.isEmpty() ? new ResponseEntity<Page<Leave>>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<Page<Leave>>(leavesPage, HttpStatus.OK);
     }
@@ -56,7 +57,8 @@ public class LeaveController {
     }
 
     @PostMapping
-    public ResponseEntity<List<Leave>> addLeaves(@Valid @RequestBody LeaveDTO leaveDTO) throws UserNotFoundException, LeaveAlreadyExistsException {
+    public ResponseEntity<List<Leave>> addLeaves(Principal principal, @Valid @RequestBody LeaveDTO leaveDTO) throws LeaveAlreadyExistsException {
+        leaveDTO.setUserId(Long.valueOf(principal.getName()));
         List<Leave> leaves = leaveService.addLeaves(leaveDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(leaves);
     }

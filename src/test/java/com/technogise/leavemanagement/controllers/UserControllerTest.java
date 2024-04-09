@@ -7,12 +7,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -54,10 +57,32 @@ public class UserControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
-        mockMvc.perform(get("/users")
+        mockMvc.perform(get("/v1/oauth/users")
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)));
+    }
+
+    @Test
+    @DisplayName("Given a user exists, when retrieving user info by ID, then it should return the user's details")
+    public void testGetUserInfo() throws Exception {
+        User user = new User();
+        user.setId(1L);
+        user.setName("Rick");
+
+        Mockito.when(userService.getUser(1L)).thenReturn(user);
+
+        Principal principal = Mockito.mock(Principal.class);
+        when(principal.getName()).thenReturn(user.getId().toString());
+
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+
+        mockMvc.perform(get("/v1/oauth/user/info")
+                .principal(principal)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Rick"));
     }
 }

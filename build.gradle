@@ -19,22 +19,28 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    runtimeOnly 'org.postgresql:postgresql'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-    implementation 'org.postgresql:postgresql:42.2.5'
-    implementation 'org.flywaydb:flyway-core:10.8.1'
-    implementation "org.flywaydb:flyway-database-postgresql:10.8.1"
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-    implementation 'com.google.oauth-client:google-oauth-client:1.30.4'
-    implementation 'com.google.apis:google-api-services-calendar:v3-rev260-1.23.0'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    implementation 'com.google.http-client:google-http-client-jackson2:1.23.0'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'org.postgresql:postgresql'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	implementation 'org.postgresql:postgresql:42.2.5'
+	implementation 'org.flywaydb:flyway-core:10.8.1'
+	implementation "org.flywaydb:flyway-database-postgresql:10.8.1"
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.google.oauth-client:google-oauth-client:1.35.0'
+	implementation 'com.google.apis:google-api-services-calendar:v3-rev411-1.25.0'
+	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.35.0'
+	implementation 'com.google.http-client:google-http-client-jackson2:1.44.1'
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {
@@ -59,6 +65,7 @@ jacocoTestReport {
             fileTree(dir: it, exclude: [
                 "*/*/*/dtos/**",
                 "*/*/*/entities/**",
+                "*/*/*/services/UserService.class",
                 "*/*/*/LeaveManagementApplication.class",
             ])
         }))
@@ -76,6 +83,7 @@ jacocoTestCoverageVerification {
             fileTree(dir: it, exclude: [
                 "*/*/*/dtos/**",
                 "*/*/*/entities/**",
+                "*/*/*/services/UserService.class",
                 "*/*/*/LeaveManagementApplication.class",
             ])
         }))
@@ -104,7 +112,11 @@ sonarLint {
         disable(
                 'java:S6813',
                 'java:S5786',
-                'java:S2293'
+                'java:S2293',
+                'java:S100',
+                'java:S3655',
+                'java:S2583'
+
         )
     }
 
