@@ -449,12 +449,12 @@ public class LeaveServiceTest {
         savedLeave2.setHalfDay(null);
         savedLeave2.setDuration(1.0);
 
-        when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave1, savedLeave2);
+        when(leaveRepository.save(any(Leave.class))).thenReturn(savedLeave2).thenReturn(savedLeave1);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
         TimesheetResponse mockResponse = new TimesheetResponse(); 
         when(kimaiTimesheetService.createTimesheet(any(Leave.class))).thenReturn(mockResponse);
-        lenient().doNothing().when(googleCalendarService).addLeave(any(Leave.class));
-
+        
         List<Leave> createdLeaves = leaveService.addLeaves(leaveDTO);
 
         Leave createdLeave1 = createdLeaves.get(0);
@@ -471,7 +471,7 @@ public class LeaveServiceTest {
         assertEquals(leaveDTO.getDescription(), createdLeave2.getDescription());
         assertNull(createdLeave2.getHalfDay());
         assertEquals(user, createdLeave2.getUser());
-    }
+    }    
 
     @Test
     public void Should_ReturnEmptyList_When_StartDateIsAfterEndDate() throws Exception {
