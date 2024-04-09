@@ -63,4 +63,17 @@ public class GlobalExceptionHandlerTest {
 
         assertEquals(expectedErrorResponse.getStatusCode(), responseEntity.getStatusCode().value());
     }
+
+    @Test
+    @DisplayName("Given an IllegalArgumentException with a generic message, when handled, then should return INTERNAL_SERVER_ERROR status.")
+    public void testHandleGenericIllegalArgumentException() {
+        String exceptionMessage = "A generic error occurred";
+        int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        ErrorResponse expectedErrorResponse = new ErrorResponse(statusCode, "An error occurred");
+        
+        ResponseEntity<ErrorResponse> responseEntity = globalExceptionHandler
+                .handleIllegalArgumentException(new IllegalArgumentException(exceptionMessage));
+
+        assertEquals(expectedErrorResponse.getStatusCode(), responseEntity.getStatusCode().value());
+    }
 }
