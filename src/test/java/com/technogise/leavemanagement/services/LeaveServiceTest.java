@@ -63,7 +63,7 @@ public class LeaveServiceTest {
         Sort sort = Sort.by(Sort.Direction.DESC, "date");
         PageRequest pageable = PageRequest.of(page, size, sort);
 
-        User user = new User(userId, "Summer", "summer@gmail", roles, null);
+        User user = new User(userId, "Summer", "summer@gmail", roles, "https://www.test.com/", null);
 
         Leave leave1 = new Leave();
         leave1.setId(1L);
@@ -96,7 +96,7 @@ public class LeaveServiceTest {
         Sort sort = Sort.by(Sort.Direction.DESC, "date");
         PageRequest pageable = PageRequest.of(page, size, sort);
 
-        User user = new User(userId, "Summer", "summer@gmail", roles, null);
+        User user = new User(userId, "Summer", "summer@gmail", roles, "https://www.test.com/", null);
 
         Leave leave1 = new Leave();
         leave1.setId(1L);
@@ -124,7 +124,7 @@ public class LeaveServiceTest {
 
         Long leaveId = 1L;
         String[] userRole = {"user"};
-        User user = new User(001l, "Test User", "testuser@gmail.com", userRole, null);
+        User user = new User(001l, "Test User", "testuser@gmail.com", userRole, "https://www.test.com/", null);
 
         Leave leave = new Leave();
         leave.setId(leaveId);
