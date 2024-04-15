@@ -31,6 +31,8 @@ public class User {
 
     private String[] roles;
 
+    private String pictureUrl;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Leave> leaves;

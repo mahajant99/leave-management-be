@@ -76,6 +76,7 @@ public class UserService {
             return user;
         }
         existingUser.setName(user.getName());
+        existingUser.setPictureUrl(user.getPictureUrl());
         userRepository.save(existingUser);
         return existingUser;
     }
@@ -91,6 +92,7 @@ public class UserService {
             String firstName = (String) payload.get("given_name");
             String lastName = (String) payload.get("family_name");
             String email = payload.getEmail();
+            String pictureUrl = (String) payload.get("picture");
 
             if (!email.matches("^.+@" + ALLOWEDDOMAIN + "$")) {
                throw new IllegalArgumentException("Email domain not allowed");
@@ -100,6 +102,7 @@ public class UserService {
 
             newUser.setName(fullName);
             newUser.setEmail(email);
+            newUser.setPictureUrl(pictureUrl);
 
             return newUser;
         } catch (GeneralSecurityException | IOException e) {

@@ -53,8 +53,8 @@ public class UserServiceTest {
         Sort sort = Sort.by(Sort.Direction.ASC, "name");
         PageRequest pageable = PageRequest.of(page, size, sort);
 
-        User testUser1 = new User(1L, "testuser1", "testuser1@gmail", roles, null);
-        User testUser2 = new User(2L, "testuser2", "testuser2@gmail", roles, null);
+        User testUser1 = new User(1L, "testuser1", "testuser1@gmail", roles, "https://www.test.com/", null);
+        User testUser2 = new User(2L, "testuser2", "testuser2@gmail", roles, "https://www.test.com/", null);
 
         List<User> users = Arrays.asList(testUser2,testUser1);
         Page<User> expectedPage = new PageImpl<>(users, pageable, users.size());
